@@ -1,0 +1,10 @@
+Flask
+requests
+SQLAlchemy
+Werkzeug
+Flask_Login
+Flask_SqlAlchemy
+Flask_Migrate
+Flask_Restful
+Flask_Cors
+PyJWT
