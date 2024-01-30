@@ -141,7 +141,7 @@ def initvideos():
         db.create_all()
         """Tester records for table"""
         videos = [
-            video(name='Azeem Khan', vid='azeemK', tokens=45),
+            video(name='Gojo Honored One', vid='azeemK', tokens=45),
         ]
 
         """Builds sample user/note(s) data"""

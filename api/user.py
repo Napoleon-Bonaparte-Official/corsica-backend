@@ -22,7 +22,7 @@ class UserAPI:
             ''' Avoid garbage in, error checking '''
             # validate name
             name = body.get('name')
-            if name is None or len(name) < 2:
+            if name is None:
                 return {'message': f'Name is missing, or is less than 2 characters'}, 400
             # validate uid
             uid = body.get('uid')
