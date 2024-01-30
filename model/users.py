@@ -144,14 +144,6 @@ class User(db.Model):
     def dob(self, dob):
         self._dob = dob
 
-    @property
-    def age(self):
-        today = date.today()
-        return (
-            today.year
-            - self._dob.year
-            - ((today.month, today.day) < (self._dob.month, self._dob.day))
-        )
 
     # output content using str(object) in human readable form, uses getter
     # output content using json dumps, this is ready for API response
@@ -178,7 +170,6 @@ class User(db.Model):
             "name": self.name,
             "uid": self.uid,
             "dob": self.dob,
-            "age": self.age,
             "posts": [post.read() for post in self.posts],
         }
 
@@ -213,28 +204,28 @@ def initUsers():
         db.create_all()
         """Tester data for table"""
         u1 = User(
-            name="Thomas Edison", 
-            uid="toby", 
-            password="123toby", 
-            dob=date(1847, 2, 11)
+            name="Advik Garg", 
+            uid="advikg", 
+            password="password", 
+            dob=date(2001, 9, 12)
         )
         u2 = User(
-            name="Nicholas Tesla", 
-            uid="niko", 
-            password="123niko", 
-            dob=date(1856, 7, 10)
+            name="Aashray Reddy", 
+            uid="imreddy", 
+            password="~uwu~<3", 
+            dob=date(1945, 8, 6)
         )
         u3 = User(
-            name="Alexander Graham Bell",
-            uid="lex",
-            password="lex",
-            dob=date(1856, 7, 10),
+            name="Will Cheng",
+            uid="cartistan666",
+            password="ilovecats123",
+            dob=date(2020, 12, 25),
         )
         u4 = User(
-            name="Grace Hopper", 
-            uid="hop", 
-            password="123hop", 
-            dob=date(1906, 12, 9)
+            name="Yeongsu Kim", 
+            uid="ykim", 
+            password="password", 
+            dob=date(1945, 8, 9)
         )
         users = [u1, u2, u3, u4]
 
