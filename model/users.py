@@ -206,25 +206,25 @@ def initUsers():
         u1 = User(
             name="Advik Garg", 
             uid="advikg", 
-            password=generate_password_hash("password", "pbkdf2:sha256", salt_length=10),
+            password="password",
             dob=date(2001, 9, 12)
         )
         u2 = User(
             name="Aashray Reddy", 
             uid="imreddy", 
-            password=generate_password_hash("~uwu~<3", "pbkdf2:sha256", salt_length=10), 
+            password="UWUuwuwuwuuwuwuwuwuwuw",
             dob=date(1945, 8, 6)
         )
         u3 = User(
             name="Will Cheng",
             uid="cartistan666",
-            password=generate_password_hash("ilovecats123", "pbkdf2:sha256", salt_length=10),
-            dob=date(2020, 12, 25),
+            password='meow',
+            dob=date(2020, 12, 25)
         )
         u4 = User(
             name="Yeongsu Kim", 
             uid="ykim", 
-            password=generate_password_hash("password", "pbkdf2:sha256", salt_length=10), 
+            password="MyEkittenandBison",
             dob=date(1945, 8, 9)
         )
         users = [u1, u2, u3, u4]
