@@ -14,8 +14,12 @@ These object can be used throughout project.
 app = Flask(__name__)
 cors = CORS(app, supports_credentials=True)
 
+root_dir = os.path.abspath(os.path.dirname(__file__))
+
 # Setup SQLAlchemy object and properties for the database (db)
-dbURI = 'sqlite:///volumes/sqlite.db'
+db_file_path = os.path.join(root_dir, 'instance', 'volumes', 'sqlite.db')
+dbURI = 'sqlite:///' + db_file_path
+# dbURI = 'sqlite:///volumes/sqlite.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = dbURI
 SECRET_KEY = os.environ.get('SECRET_KEY') or 'SECRET_KEY'
