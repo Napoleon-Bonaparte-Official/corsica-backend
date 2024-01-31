@@ -84,6 +84,20 @@ class UserAPI:
                         "error": "Something went wrong",
                         "message": str(e)
                     }, 500
+        @token_required
+        def delete(self, current_user):
+            body = request.get_json()
+            uid = body.get('uid')
+            user = User.query.filter_by(_uid=uid).first()
+            if user:
+                try:
+                    user.delete()
+                    return {f'{uid} has been deleted'}
+                except Exception as e:
+                    return {
+                        "error": "Something went wrong",
+                        "message": str(e)
+                    }, 500
 
     class _Security(Resource):
         def post(self):

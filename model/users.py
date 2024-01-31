@@ -206,7 +206,6 @@ class User(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
-        return None
 
 
 """Database Creation and Testing """
