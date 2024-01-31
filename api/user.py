@@ -65,7 +65,6 @@ class UserAPI:
         
 
     class _Update(Resource):
-        @token_required
         def post(self, current_user):
             body = request.get_json()
             uid = body.get('uid')
@@ -84,7 +83,6 @@ class UserAPI:
                         "error": "Something went wrong",
                         "message": str(e)
                     }, 500
-        @token_required
         def delete(self, current_user):
             body = request.get_json()
             uid = body.get('uid')
