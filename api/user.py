@@ -65,7 +65,7 @@ class UserAPI:
         
 
     class _Update(Resource):
-        def post(self, current_user):
+        def post(self):
             body = request.get_json()
             uid = body.get('uid')
             if uid is None:
@@ -83,7 +83,7 @@ class UserAPI:
                         "error": "Something went wrong",
                         "message": str(e)
                     }, 500
-        def delete(self, current_user):
+        def delete(self):
             body = request.get_json()
             uid = body.get('uid')
             user = User.query.filter_by(_uid=uid).first()
