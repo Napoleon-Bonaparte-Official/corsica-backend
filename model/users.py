@@ -130,6 +130,7 @@ class User(db.Model):
             self._password[0:10] + "..."
         )  # because of security only show 1st characters
 
+    # SET
     # update password, this is conventional setter
     def set_password(self, password):
         """Create a hashed password."""
@@ -162,6 +163,7 @@ class User(db.Model):
 
     # CRUD create/add a new record to the table
     # returns self or None on error
+    # CREATE
     def create(self):
         try:
             # creates a person object from User(db.Model) class, passes initializers
@@ -174,6 +176,7 @@ class User(db.Model):
 
     # CRUD read converts self to dictionary
     # returns dictionary
+    # READ
     def read(self):
         return {
             "id": self.id,
@@ -185,6 +188,7 @@ class User(db.Model):
 
     # CRUD update: updates user name, password, phone
     # returns self
+    # UPDATE
     def update(self, name="", uid="", password=""):
         """only updates values with length"""
         if len(name) > 0:
@@ -203,6 +207,7 @@ class User(db.Model):
     
     # CRUD delete: remove self
     # None
+    # DELETE
     def delete(self):
         db.session.delete(self)
         db.session.commit()
@@ -220,30 +225,30 @@ def initUsers():
         u1 = User(
             name="Advik Garg", 
             uid="advikg", 
-            email="meow@gmail.com",
+            email="advikg@gmail.com",
             password="password",
-            dob=date(2001, 9, 12)
+            dob=date(2008, 9, 12)
         )
         u2 = User(
             name="Aashray Reddy", 
-            uid="imreddy", 
-            email = "meow2@gmail.com",
-            password="UWUuwuwuwuuwuwuwuwuwuw",
-            dob=date(1945, 8, 6)
+            uid="aashrayr", 
+            email = "aashrayr@gmail.com",
+            password="password",
+            dob=date(2008, 1, 6)
         )
         u3 = User(
             name="Will Cheng",
-            uid="cartistan666",
-            password='meow',
-            email = "meowzedong@gmail.com",
-            dob=date(2020, 12, 25)
+            uid="willc",
+            password='password',
+            email = "willc@gmail.com",
+            dob=date(2008, 12, 25)
         )
         u4 = User(
             name="Yeongsu Kim", 
-            uid="ykim", 
-            password="MyEkittenandBison",
-            email="MyAdorableCrownedBison@gmail.com",
-            dob=date(1945, 8, 9)
+            uid="yeongsuk", 
+            password="password",
+            email="yeongsuk@gmail.com",
+            dob=date(2008, 8, 9)
         )
         users = [u1, u2, u3, u4]
 
