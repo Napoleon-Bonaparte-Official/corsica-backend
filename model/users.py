@@ -195,7 +195,12 @@ class User(db.Model):
             self.set_password(password)
         db.session.commit()
         return self
-
+    
+    def update_email(self, email=""):
+        self.email = email
+        db.session.commit()
+        return self
+    
     # CRUD delete: remove self
     # None
     def delete(self):

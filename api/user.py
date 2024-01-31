@@ -33,7 +33,6 @@ class UserAPI:
                 return {'message': f'Email is missing or in the wrong format'}, 400
             password = body.get('password')
             dob = body.get('dob')
-            email = body.get('email')
 
             ''' #1: Key code block, setup USER OBJECT '''
             uo = User(name=name, uid=uid, email=email)
@@ -63,7 +62,29 @@ class UserAPI:
             users = User.query.all()    # read/extract all users from database
             json_ready = [user.read() for user in users]  # prepare output in json
             return jsonify(json_ready)  # jsonify creates Flask response object, more specific to APIs than json.dumps
-    
+        
+
+    class _Update(Resource):
+        @token_required
+        def post(self, current_user):
+            body = request.get_json()
+            uid = body.get('uid')
+            if uid is None:
+                return {'message': f'User ID missing'}, 400
+            email = body.get('email')
+            if email is None or "@" not in email:
+                return {'message': f'Email is blank or has an invalid format'}, 400
+            user = User.query.filter_by(_uid=uid).first()
+            if user:
+                try:
+                    user.update_email(email)
+                    return jsonify(user.read())
+                except Exception as e:
+                    return {
+                        "error": "Something went wrong",
+                        "message": str(e)
+                    }, 500
+
     class _Security(Resource):
         def post(self):
             try:
@@ -123,4 +144,4 @@ class UserAPI:
     # building RESTapi endpoint
     api.add_resource(_CRUD, '/')
     api.add_resource(_Security, '/authenticate')
-    
+    api.add_resource(_Update, '/update')
