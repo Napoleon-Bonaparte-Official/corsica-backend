@@ -14,8 +14,7 @@ api = Api(user_api)
 
 class UserAPI:        
     class _CRUD(Resource):  # User API operation for Create, Read.  THe Update, Delete methods need to be implemeented
-        @token_required
-        def post(self, current_user): # Create method
+        def post(self): # Create method
             ''' Read data for json body '''
             body = request.get_json()
             
@@ -29,12 +28,15 @@ class UserAPI:
             if uid is None or len(uid) < 2:
                 return {'message': f'User ID is missing, or is less than 2 characters'}, 400
             # look for password and dob
+            email = body.get('email')
+            if email is None or "@" not in email:
+                return {'message': f'Email is missing or in the wrong format'}, 400
             password = body.get('password')
             dob = body.get('dob')
+            email = body.get('email')
 
             ''' #1: Key code block, setup USER OBJECT '''
-            uo = User(name=name, 
-                      uid=uid)
+            uo = User(name=name, uid=uid, email=email)
             
             ''' Additional garbage error checking '''
             # set password if provided
@@ -43,7 +45,7 @@ class UserAPI:
             # convert to date type
             if dob is not None:
                 try:
-                    uo.dob = datetime.strptime(dob, '%Y-%m-%d').date()
+                    uo.dob = datetime.strptime(dob, '%m-%d-%Y').date()
                 except:
                     return {'message': f'Date of birth format error {dob}, must be mm-dd-yyyy'}, 400
             
