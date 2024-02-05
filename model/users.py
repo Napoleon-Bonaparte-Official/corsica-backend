@@ -81,6 +81,9 @@ class User(db.Model):
     _email = db.Column(db.String(255), unique=True, nullable=False)
     _dob = db.Column(db.Date)
 
+    # Demo purposes
+    #
+
     # Defines a relationship between User record and Notes table, one-to-many (one user to many notes)
     posts = db.relationship("Post", cascade="all, delete", backref="users", lazy=True)
 
@@ -197,7 +200,8 @@ class User(db.Model):
         return self
     
     def update_email(self, email=""):
-        self.email = email
+        if len(email) >= 5 and "@" in email:
+            self.email = email
         db.session.commit()
         return self
     
