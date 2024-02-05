@@ -18,7 +18,7 @@ class Video(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     _name = db.Column(db.String(255), unique=False, nullable=False)
     _description = db.Column(db.String(255), unique=True, nullable=False)
-    _views = db.Column(db.Integer)
+    _views = db.Column(db.Integer, nullable=False)
     _vid = db.Column(db.String(255), unique=True, nullable=False)
     _path = db.Column(db.String(255), unique=False, nullable = False)
 
@@ -141,7 +141,7 @@ def initvideos():
         db.create_all()
         """Tester records for table"""
         videos = [
-            video(name='Gojo Honored One', vid='azeemK', tokens=45),
+            video(name='Gojo Honored One', descrption="Throughout the heavens and the earth I alone am the honored one",vid='12345', views=0)
         ]
 
         """Builds sample user/note(s) data"""

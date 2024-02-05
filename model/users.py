@@ -13,26 +13,47 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 
 # Define the Post class to manage actions in 'posts' table,  with a relationship to 'users' table
-class Post(db.Model):
-    __tablename__ = "posts"
+class Vid(db.Model):
+    __tablename__ = "videos"
+    id = db.Column(db.Integer, primary_key=True)
+    _name = db.Column(db.String(255), unique=False, nullable=False)
+    _description = db.Column(db.String(255), unique=True, nullable=False)
+    _views = db.Column(db.Integer, nullable=False)
+    _path = db.Column(db.String(255), unique=False, nullable = False)
 
     # Define the Notes schema
-    id = db.Column(db.Integer, primary_key=True)
-    note = db.Column(db.Text, unique=False, nullable=False)
-    image = db.Column(db.String, unique=False)
-    # Define a relationship in Notes Schema to userID who originates the note, many-to-one (many notes to one user)
-    userID = db.Column(db.Integer, db.ForeignKey("users.id"))
-
     # Constructor of a Notes object, initializes of instance variables within object
-    def __init__(self, id, note, image):
-        self.userID = id
-        self.note = note
-        self.image = image
+        # a name getter method, extracts name from object
+    @property
+    def name(self):
+        return self._name
+    
+    # a setter function, allows name to be updated after initial object creation
+    @name.setter
+    def name(self, name):
+        self._name = name
+    
+    # a getter method, extracts email from object
+    @property
+    def description(self):
+        return self._description
+    
+    # a setter function, allows name to be updated after initial object creation
+    @description.setter
+    def description(self, description):
+        self.description = description
+    
+    @property
+    def path(self):
+        return self._path
+    
+    @path.setter
+    def path(self, path):
+        self._path = path
+
 
     # Returns a string representation of the Notes object, similar to java toString()
     # returns string
-    def __repr__(self):
-        return "Notes(" + str(self.id) + "," + self.note + "," + str(self.userID) + ")"
 
     # CRUD create, adds a new record to the Notes table
     # returns the object added or None in case of an error
@@ -49,21 +70,31 @@ class Post(db.Model):
     # CRUD read, returns dictionary representation of Notes object
     # returns dictionary
     def read(self):
-        # encode image
-        path = app.config["UPLOAD_FOLDER"]
-        file = os.path.join(path, self.image)
-        file_text = open(file, "rb")
-        file_read = file_text.read()
-        file_encode = base64.encodebytes(file_read)
-
         return {
             "id": self.id,
-            "userID": self.userID,
-            "note": self.note,
-            "image": self.image,
-            "base64": str(file_encode),
+            "name": self.name,
+            "description": self.description,
+            "views": self.views,
+            "path": self.path
         }
+    
+def initvideos():
+    with app.app_context():
+        """Create database and tables"""
+        db.create_all()
+        """Tester records for table"""
+        videos = [
+            video(name='Gojo Honored One', descrption="Throughout the heavens and the earth I alone am the honored one",vid='12345', views=0)
+        ]
 
+        """Builds sample user/note(s) data"""
+        for video in videos:
+            try:
+                video.create()
+            except IntegrityError:
+                '''fails with bad or duplicate data'''
+                db.session.remove()
+                print(f"Records exist, duplicate email, or error: {video.vid}")
 
 # Define the User class to manage actions in the 'users' table
 # -- Object Relational Mapping (ORM) is the key concept of SQLAlchemy
