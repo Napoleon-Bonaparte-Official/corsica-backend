@@ -33,8 +33,8 @@ class UserAPI:
                 return {'message': f'Email is missing or in the wrong format'}, 400
             password = body.get('password')
             dob = body.get('dob')
-
             ''' #1: Key code block, setup USER OBJECT '''
+            print(dob)
             uo = User(name=name, uid=uid, email=email)
             
             ''' Additional garbage error checking '''
@@ -42,12 +42,12 @@ class UserAPI:
             if password is not None:
                 uo.set_password(password)
             # convert to date type
-            if dob is not None:
-                try:
-                    uo.dob = datetime.strptime(dob, '%m-%d-%Y').date()
-                except:
-                    return {'message': f'Date of birth format error {dob}, must be mm-dd-yyyy'}, 400
-            
+            # if dob is not None:
+            #     try:
+            #         uo.dob = datetime.strptime(dob, '%m-%d-%Y').date()
+            #     except:
+            #         return {'message': f'Date of birth format error {dob}, must be mm-dd-yyyy'}, 400
+            print(uo)
             ''' #2: Key Code block to add user to database '''
             # create user in database
             user = uo.create()
@@ -68,12 +68,15 @@ class UserAPI:
         def post(self):
             body = request.get_json()
             uid = body.get('uid')
+            print(uid)
             if uid is None:
                 return {'message': f'User ID missing'}, 400
             email = body.get('email')
+            print(email)
             if email is None or "@" not in email:
                 return {'message': f'Email is blank or has an invalid format'}, 400
             user = User.query.filter_by(_uid=uid).first()
+            print(user)
             if user:
                 try:
                     user.update_email(email)
@@ -87,15 +90,18 @@ class UserAPI:
             body = request.get_json()
             uid = body.get('uid')
             user = User.query.filter_by(_uid=uid).first()
+            
             if user:
-                try:
-                    user.delete()
-                    return {f'{uid} has been deleted'}
-                except Exception as e:
-                    return {
-                        "error": "Something went wrong",
-                        "message": str(e)
-                    }, 500
+                if user.is_admin():
+                    try:
+                        user.delete()
+                        return {f'{uid} has been deleted'}
+                    except Exception as e:
+                        return {
+                            "error": "Something went wrong",
+                            "message": str(e)
+                        }, 500
+                
 
     class _Security(Resource):
         def post(self):
@@ -120,7 +126,7 @@ class UserAPI:
                 if user:
                     try:
                         token = jwt.encode(
-                            {"_uid": user._uid},
+                            {"_uid": user._uid, "role": user.role},
                             current_app.config["SECRET_KEY"],
                             algorithm="HS256"
                         )

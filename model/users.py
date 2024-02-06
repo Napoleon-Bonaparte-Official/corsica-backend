@@ -111,6 +111,7 @@ class User(db.Model):
     _password = db.Column(db.String(255), unique=False, nullable=False)
     _email = db.Column(db.String(255), unique=True, nullable=False)
     _dob = db.Column(db.Date)
+    _role = db.Column(db.String(20), default="User", nullable=False)
 
     # Demo purposes
     #
@@ -119,12 +120,13 @@ class User(db.Model):
     # posts = db.relationship("Post", cascade="all, delete", backref="users", lazy=True)
 
     # constructor of a User object, initializes the instance variables within object (self)
-    def __init__(self, name, uid, email, password="123qwerty", dob=date.today()):
+    def __init__(self, name, uid, email, password="123qwerty", dob=date.today(), role="User"):
         self._name = name  # variables with self prefix become part of the object,
         self._uid = uid
         self.set_password(password)
         self._email = email
         self._dob = dob
+        self._role = role
     # a name getter method, extracts name from object
     @property
     def name(self):
@@ -206,6 +208,19 @@ class User(db.Model):
             db.session.remove()
             return None
 
+    @property
+    def role(self):
+        return self._role
+
+    @role.setter
+    def role(self, role):
+        self._role = role
+
+    def is_admin(self):
+        return self._role == "Admin"
+    
+    # ... (existing code)
+
     # CRUD read converts self to dictionary
     # returns dictionary
     def read(self):
@@ -214,7 +229,9 @@ class User(db.Model):
             "name": self.name,
             "uid": self.uid,
             "dob": self.dob,
-            # "posts": [post.read() for post in self.posts],
+            # "age": self.age,
+            "role": self.role,
+            # "post s": [post.read() for post in self.posts]
         }
 
     # CRUD update: updates user name, password, phone
@@ -234,6 +251,7 @@ class User(db.Model):
         if len(email) >= 5 and "@" in email:
             self.email = email
         db.session.commit()
+        print(self.email)
         return self
     
     # CRUD delete: remove self
@@ -257,7 +275,8 @@ def initUsers():
             uid="advikg", 
             email="meow@gmail.com",
             password="password",
-            dob=date(2001, 9, 12)
+            dob=date(2001, 9, 12),
+            role="Admin"
         )
         u2 = User(
             name="Aashray Reddy", 
@@ -278,7 +297,7 @@ def initUsers():
             uid="ykim", 
             password="MyEkittenandBison",
             email="MyAdorableCrownedBison@gmail.com",
-            dob=date(1945, 8, 9)
+            dob=date(1945, 8, 9),
         )
         users = [u1, u2, u3, u4]
 
