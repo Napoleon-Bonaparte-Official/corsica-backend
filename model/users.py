@@ -273,7 +273,7 @@ def initUsers():
         u1 = User(
             name="Advik Garg", 
             uid="advikg", 
-            email="meow@gmail.com",
+            email="advik@gmail.com",
             password="password",
             dob=date(2001, 9, 12),
             role="Admin"
@@ -281,22 +281,22 @@ def initUsers():
         u2 = User(
             name="Aashray Reddy", 
             uid="imreddy", 
-            email = "meow2@gmail.com",
-            password="UWUuwuwuwuuwuwuwuwuwuw",
+            email = "aashray@gmail.com",
+            password="password",
             dob=date(1945, 8, 6)
         )
         u3 = User(
             name="Will Cheng",
             uid="cartistan666",
-            password='meow',
-            email = "meowzedong@gmail.com",
+            password='password',
+            email = "will@gmail.com",
             dob=date(2020, 12, 25)
         )
         u4 = User(
             name="Yeongsu Kim", 
             uid="ykim", 
-            password="MyEkittenandBison",
-            email="MyAdorableCrownedBison@gmail.com",
+            password="password",
+            email="ykim@gmail.com",
             dob=date(1945, 8, 9),
         )
         users = [u1, u2, u3, u4]
