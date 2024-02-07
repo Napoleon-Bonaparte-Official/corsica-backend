@@ -85,21 +85,18 @@ class UserAPI:
                         "error": "Something went wrong",
                         "message": str(e)
                     }, 500
-        def delete(self):
+        
+        @token_required('Admin')
+        def delete(self, _): # Delete Method
             body = request.get_json()
             uid = body.get('uid')
             user = User.query.filter_by(_uid=uid).first()
-            
-            if user:
-                if user.is_admin():
-                    try:
-                        user.delete()
-                        return {f'{uid} has been deleted'}
-                    except Exception as e:
-                        return {
-                            "error": "Something went wrong",
-                            "message": str(e)
-                        }, 500
+            if user is None:
+                return {'message': f'User {uid} not found'}, 404
+            json = user.read()
+            user.delete() 
+            # 204 is the status code for delete with no json response
+            return f"Deleted user: {json}", 204 # use 200 to test with Postman
                 
 
     class _Security(Resource):
