@@ -121,7 +121,7 @@ class UserAPI:
                 ''' Find user '''
                 user = User.query.filter_by(_uid=uid).first()
                 if user is None or not user.is_password(password):
-                    return {'message': f"Invalid user id or password"}, 400
+                    return {'message': f"Invalid user id or password"}, 401
                 if user:
                     try:
                         token = jwt.encode(

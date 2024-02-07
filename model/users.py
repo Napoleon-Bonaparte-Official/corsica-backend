@@ -231,6 +231,7 @@ class User(db.Model):
             "dob": self.dob,
             # "age": self.age,
             "role": self.role,
+            "email": self.email
             # "post s": [post.read() for post in self.posts]
         }
 
