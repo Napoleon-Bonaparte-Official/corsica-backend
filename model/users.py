@@ -17,21 +17,23 @@ class Vid(db.Model):
     __tablename__ = "videos"
     id = db.Column(db.Integer, primary_key=True)
     _name = db.Column(db.String(255), unique=False, nullable=False)
-    _description = db.Column(db.String(255), unique=True, nullable=False)
+    _description = db.Column(db.String(255), nullable=False)
     _views = db.Column(db.Integer, nullable=False)
     _video = db.Column(db.String(255), unique=False, nullable = False)
     _thumbnail = db.Column(db.String, unique=False)
-    _videoID = db.Column(db.Integer, nullable=True)
+    _videoID = db.Column(db.Integer, unique=True, nullable=True)
+    _userID = db.Column(db.String(255), nullable=False)
     # Define the Notes schema
     # Constructor of a Notes object, initializes of instance variables within object
         # a name getter method, extracts name from object
-    def __init__(self, name, description, views, video, thumbnail, videoID):
+    def __init__(self, name, description, views, video, thumbnail, videoID, userID):
         self._name = name
         self._description = description
         self._views = views
         self._video = video
         self._thumbnail = thumbnail
         self._videoID = videoID
+        self._userID= userID
 
     @property
     def name(self):
@@ -84,6 +86,14 @@ class Vid(db.Model):
     def videoID(self, videoID):
         self._videoID = videoID
 
+    @property
+    def userID(self):
+        return self._userID
+    
+    @userID.setter
+    def userID(self, userID):
+        self._userID = userID
+
     # Returns a string representation of the Notes object, similar to java toString()
     # returns string
 
@@ -115,7 +125,8 @@ class Vid(db.Model):
             "video": "http://127.0.0.1:8069/videos/" + self.video,
             "thumbnail": self._thumbnail,
             "base64": str(file_encode),
-            "videoID": self._videoID
+            "videoID": self.videoID,
+            "userID": self.userID
         }
     def put(self):
         try:
@@ -131,7 +142,7 @@ def initVideos():
         db.create_all()
         """Tester records for table"""
         videos = [
-            Vid(name='Gojo Honored One', description="Throughout the heavens and the earth I alone am the honored one", thumbnail="test.png", views=0, video="test.mp4", videoID=0)
+            Vid(name='Gojo Honored One', description="Throughout the heavens and the earth I alone am the honored one", thumbnail="test.png", views=0, video="test.mp4", videoID=0, userID="advikg")
         ]
 
         """Builds sample user/note(s) data"""
