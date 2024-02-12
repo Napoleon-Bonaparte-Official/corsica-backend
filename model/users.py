@@ -130,8 +130,8 @@ class Vid(db.Model):
         }
     def put(self):
         try:
-            self.views += 1
-            db.commit()
+            self._views += 1
+            db.session.commit()
             return self
         except:
             return None
@@ -188,6 +188,7 @@ class User(db.Model):
         self._email = email
         self._dob = dob
         self._role = role
+        
     # a name getter method, extracts name from object
     @property
     def name(self):
