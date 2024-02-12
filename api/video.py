@@ -3,7 +3,7 @@ from flask import Blueprint, request, jsonify, current_app, Response
 from flask_restful import Api, Resource # used for REST API building
 from datetime import datetime
 from auth_middleware import token_required
-
+import os
 from model.users import Vid
 
 video_api = Blueprint('video_api', __name__, url_prefix='/api/videos')
@@ -28,38 +28,57 @@ class VideoAPI:
                         "error": "Something went wrong",
                         "message": str(e)
                     }, 500
-
-        def post(self): # Create method
+                
+        @token_required
+        def post(self, current_user): # Create method
             ''' Read data for json body '''
-            body = request.get_json()
-            
-            ''' Avoid garbage in, error checking '''
-            title = body.get('title')
-            if title is None:
-                return {'message': f'Title is missing, or is less than 2 characters'}, 400
-            description = body.get('description')
-            if description is None:
-                return {'message': f'Description is missing, or is less than 2 characters'}, 400
-            # look for password and dob
-            thumbnail = body.get('thumbnail')
-            if thumbnail is None:
-                return {'message': f'thumbnail is missing or in the wrong format'}, 400
-            video = body.get('video')
-            if video is None:
-                return {'message': f'Video is missing or in the wrong format'}, 400
-            path = body.get('path')
-            if path is None:
-                return {'message': f'Path is missing or in the wrong format'}, 400
+            if request.is_json:
+                body = request.get_json()
+                ''' Avoid garbage in, error checking '''
+                name = body.get('name')
+                if name is None:
+                    return {'message': f'name is missing, or is less than 2 characters'}, 400
 
-            ''' #1: Key code block, setup USER OBJECT '''
-            vid = Vid(title,thumbnail,description,video,path)
-            # create user in database
-            videoJ = vid.create()
-            # success returns json of user
-            if videoJ:
-                return jsonify(videoJ.read())
-            # failure returns error
-            return {'message': f'Processed {title}, either a format error or  ID {id} is duplicate'}, 400
+                description = body.get('description')
+                if description is None:
+                    return {'message': f'Description is missing, or is less than 2 characters'}, 400
+
+                # look for password and dob
+                thumbnail = body.get('thumbnail')
+                if thumbnail is None:
+                    return {'message': f'thumbnail is missing or in the wrong format'}, 400
+
+                video = body.get('video')
+                if video is None:
+                    return {'message': f'Video is missing or in the wrong format'}, 400
+                
+                userID = body.get('userID')
+                if userID is None:
+                    return {'message': f'userID is missing or in the wrong format'}, 400
+
+                ''' #1: Key code block, setup USER OBJECT '''
+                vid = Vid(name,thumbnail,description,video,userID)
+                # create user in database
+                videoJ = vid.create()
+                # success returns json of user
+                if videoJ:
+                    return jsonify(videoJ.read())
+                # failure returns error
+                return {'message': f'Processed {name}, either a format error or  ID {id} is duplicate'}, 400
+            
+            else:
+                video_file = request.files['video']
+                # Check if the file has a filename
+                if video_file.filename == '':
+                    return 'No selected file', 400
+
+                # Ensure the 'videos' directory exists
+                if not os.userID.exists('videos'):
+                    os.makedirs('videos')
+
+                # Save the video file to the 'videos' directory
+                video_userID = os.userID.join('videos', video_file.filename)
+                video_file.save(video_userID)
 
         def get(self): # Read Method
             videos = Vid.query.all()    # read/extract all users from database
@@ -132,7 +151,7 @@ class VideoAPI:
     #                             max_age=3600,
     #                             secure=True,
     #                             httponly=True,
-    #                             path='/',
+    #                             userID='/',
     #                             samesite='None'  # This is the key part for cross-site requests
 
     #                             # domain="frontend.com"
