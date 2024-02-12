@@ -72,12 +72,8 @@ class VideoAPI:
                 if video_file.filename == '':
                     return 'No selected file', 400
 
-                # Ensure the 'videos' directory exists
-                if not os.userID.exists('videos'):
-                    os.makedirs('videos')
-
                 # Save the video file to the 'videos' directory
-                video_userID = os.userID.join('videos', video_file.filename)
+                video_userID = os.path.join('videos', video_file.filename)
                 video_file.save(video_userID)
 
         def get(self): # Read Method
