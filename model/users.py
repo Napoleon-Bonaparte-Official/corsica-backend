@@ -51,13 +51,28 @@ class Vid(db.Model):
         self.description = description
     
     @property
+    def views(self):
+        return self._name
+    
+    @views.setter
+    def views(self, views):
+        self.views = views
+
+    @property
     def video(self):
         return self._video
     
     @video.setter
     def video(self, video):
         self._video = video
-
+    
+    @property
+    def thumbnail(self):
+        return self._thumbnail
+    
+    @thumbnail.setter
+    def thumbnail(self, thumbnail):
+        self._thumbnail = thumbnail
 
     # Returns a string representation of the Notes object, similar to java toString()
     # returns string

@@ -29,5 +29,5 @@ Migrate(app, db)
 
 # Images storage
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # maximum size of uploaded content
-app.config['UPLOAD_EXTENSIONS'] = ['.mp4', '.mov', '.webm']  # supported file types
-app.config['UPLOAD_FOLDER'] = 'volumes/uploads/'  # location of user uploaded content
+app.config['UPLOAD_EXTENSIONS'] = ['.png', '.jpg']  # supported file types
+app.config['UPLOAD_FOLDER'] = 'instance/volumes/uploads/'  # location of user uploaded content

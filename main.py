@@ -11,6 +11,7 @@ from __init__ import app, db, cors  # Definitions initialization
 
 # setup APIs
 from api.user import user_api # Blueprint import api definition
+from api.video import video_api
 # from api.player import player_api
 # database migrations
 from model.users import initUsers, initVideos
@@ -25,6 +26,7 @@ db.init_app(app)
 
 # register URIs
 app.register_blueprint(user_api) # register api routes
+app.register_blueprint(video_api)
 # app.register_blueprint(player_api)
 app.register_blueprint(app_projects) # register app pages
 
