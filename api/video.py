@@ -2,65 +2,55 @@ import json, jwt
 from flask import Blueprint, request, jsonify, current_app, Response
 from flask_restful import Api, Resource # used for REST API building
 from datetime import datetime
-from auth_middleware import token_required
+# from auth_middleware import token_required
 
-from model.users import User
+from model.videos import Video
 
-user_api = Blueprint('user_api', __name__,
-                   url_prefix='/api/users')
+video_api = Blueprint('video', __name__, url_prefix='/api/videos')
 
 # API docs https://flask-restful.readthedocs.io/en/latest/api.html
-api = Api(user_api)
+api = Api(video_api)
 
-class UserAPI:        
+class VideoAPI:        
     class _CRUD(Resource):  # User API operation for Create, Read.  THe Update, Delete methods need to be implemeented
         def post(self): # Create method
             ''' Read data for json body '''
             body = request.get_json()
             
             ''' Avoid garbage in, error checking '''
-            # validate name
-            name = body.get('name')
-            if name is None:
-                return {'message': f'Name is missing, or is less than 2 characters'}, 400
-            # validate uid
-            uid = body.get('uid')
-            if uid is None or len(uid) < 2:
-                return {'message': f'User ID is missing, or is less than 2 characters'}, 400
+            title = body.get('title')
+            if title is None:
+                return {'message': f'Title is missing, or is less than 2 characters'}, 400
+            description = body.get('description')
+            if description is None:
+                return {'message': f'Description is missing, or is less than 2 characters'}, 400
             # look for password and dob
-            email = body.get('email')
-            if email is None or "@" not in email:
-                return {'message': f'Email is missing or in the wrong format'}, 400
-            password = body.get('password')
-            dob = body.get('dob')
+            poster = body.get('poster')
+            if poster is None:
+                return {'message': f'Poster is missing or in the wrong format'}, 400
+            video = body.get('video')
+            if video is None:
+                return {'message': f'Video is missing or in the wrong format'}, 400
+            path = body.get('path')
+            if path is None:
+                return {'message': f'Path is missing or in the wrong format'}, 400
 
             ''' #1: Key code block, setup USER OBJECT '''
-            uo = User(name=name, uid=uid, email=email)
-            
-            ''' Additional garbage error checking '''
-            # set password if provided
-            if password is not None:
-                uo.set_password(password)
-            # convert to date type
-            if dob is not None:
-                try:
-                    uo.dob = datetime.strptime(dob, '%m-%d-%Y').date()
-                except:
-                    return {'message': f'Date of birth format error {dob}, must be mm-dd-yyyy'}, 400
-            
-            ''' #2: Key Code block to add user to database '''
+            vid = Video(title,poster,description,video,path)
             # create user in database
-            user = uo.create()
+            videoJ = vid.create()
             # success returns json of user
-            if user:
-                return jsonify(user.read())
+            if videoJ:
+                return jsonify(videoJ.read())
             # failure returns error
-            return {'message': f'Processed {name}, either a format error or User ID {uid} is duplicate'}, 400
+            return {'message': f'Processed {title}, either a format error or  ID {id} is duplicate'}, 400
 
-        @token_required
-        def get(self, current_user): # Read Method
-            users = User.query.all()    # read/extract all users from database
-            json_ready = [user.read() for user in users]  # prepare output in json
+        def get(self, id): # Read Method
+            videos = Video.query.all()    # read/extract all users from database
+            for video in videos:
+                if(video.id == id):
+                    json_ready = [video.read()]
+                    break# prepare output in json
             return jsonify(json_ready)  # jsonify creates Flask response object, more specific to APIs than json.dumps
         
 

@@ -12,57 +12,68 @@ from werkzeug.security import generate_password_hash, check_password_hash
 ''' Tutorial: https://www.sqlalchemy.org/library.html#tutorials, try to get into Python shell and follow along '''
 
 class Video(db.Model):
-    __tablename__ = 'videos'  # table name is plural, class name is singular
+    count = 0
+    __tablename__ = 'videos'  # table title is plural, class title is singular
 
     # Define the video schema with "vars" from object
-    id = db.Column(db.Integer, primary_key=True)
-    _name = db.Column(db.String(255), unique=False, nullable=False)
+    id = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
+    _title = db.Column(db.String(255), unique=False, nullable=False)
     _description = db.Column(db.String(255), unique=True, nullable=False)
+    _poster = db.Column(db.String(255), unique=False, nullable=False)
     _views = db.Column(db.Integer, nullable=False)
-    _vid = db.Column(db.String(255), unique=True, nullable=False)
+    _video = db.Column(db.String(255), unique=True, nullable=False)
     _path = db.Column(db.String(255), unique=False, nullable = False)
 
     # constructor of a video object, initializes the instance variables within object (self)
-    def __init__(self, name, description, views, vid, path):
-        self._name = name    # variables with self prefix become part of the object, 
+    def __init__(self, title, poster, description, vid, path):
+        self.id = Video.count
+        self._title = title    # variables with self prefix become part of the object, 
         self._description = description
-        self.views = views
-        self._vid = vid
-
-    # a name getter method, extracts name from object
+        self._poster = poster
+        self._views = 0
+        self._video = vid
+        self._path = path
+        Video.count += 1
+    # a title getter method, extracts title from object
+    @property 
+    def id(self):
+        return self.id
     @property
-    def name(self):
-        return self._name
+    def title(self):
+        return self._title
     
-    # a setter function, allows name to be updated after initial object creation
-    @name.setter
-    def name(self, name):
-        self._name = name
+    # a setter function, allows title to be updated after initial object creation
+    @title.setter
+    def title(self, title):
+        self._title = title
     
     # a getter method, extracts email from object
     @property
     def description(self):
         return self._description
     
-    # a setter function, allows name to be updated after initial object creation
+    # a setter function, allows title to be updated after initial object creation
     @description.setter
     def description(self, description):
         self.description = description
         
+    @property
+    def poster(self):
+        return self._poster
     # check if vid parameter matches user id in object, return boolean
         # a getter method, extracts email from object
     @property
-    def vid(self):
-        return self._vid
+    def video(self):
+        return self._video
     
-    # a setter function, allows name to be updated after initial object creation
-    @vid.setter
-    def vid(self, vid):
-        self._vid = vid
+    # a setter function, allows title to be updated after initial object creation
+    @video.setter
+    def video(self, video):
+        self._video = video
         
     # check if vid parameter matches user id in object, return boolean
-    def is_Vid(self, vid):
-        return self._vid == vid
+    def is_Vid(self, video):
+        return self.video == video
     
     @property
     def path(self):
@@ -97,20 +108,20 @@ class Video(db.Model):
     def read(self):
         return {
             "id": self.id,
-            "name": self.name,
+            "title": self.title,
             "description": self.description,
             "views": self.views,
             "vid": self.vid,
             "path": self.path
         }
 
-    # CRUD update: updates name, vid, password, tokens
+    # CRUD update: updates title, vid, password, tokens
     # returns self
     def update(self, dictionary):
         """only updates values in dictionary with length"""
         for key in dictionary:
-            if key == "name":
-                self.name = dictionary[key]
+            if key == "title":
+                self.title = dictionary[key]
             if key == "description":
                 self.description = dictionary[key]
             if key == "views":
@@ -141,7 +152,7 @@ def initvideos():
         db.create_all()
         """Tester records for table"""
         videos = [
-            video(name='Gojo Honored One', descrption="Throughout the heavens and the earth I alone am the honored one",vid='12345', views=0)
+            video(title='Gojo Honored One', descrption="Throughout the heavens and the earth I alone am the honored one",vid='12345', views=0)
         ]
 
         """Builds sample user/note(s) data"""
@@ -152,3 +163,6 @@ def initvideos():
                 '''fails with bad or duplicate data'''
                 db.session.remove()
                 print(f"Records exist, duplicate email, or error: {video.vid}")
+                
+                
+
