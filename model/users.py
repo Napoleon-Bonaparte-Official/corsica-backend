@@ -20,15 +20,16 @@ class Vid(db.Model):
     _description = db.Column(db.String(255), unique=True, nullable=False)
     _views = db.Column(db.Integer, nullable=False)
     _video = db.Column(db.String(255), unique=False, nullable = False)
-
+    _thumbnail = db.Column(db.String, unique=False)
     # Define the Notes schema
     # Constructor of a Notes object, initializes of instance variables within object
         # a name getter method, extracts name from object
-    def __init__(self, name, description, views, video):
+    def __init__(self, name, description, views, video, thumbail):
         self._name = name
         self._description = description
         self._views = views
         self._video = video
+        self._thumbnail = thumbnail
 
     @property
     def name(self):
@@ -77,7 +78,7 @@ class Vid(db.Model):
     # returns dictionary
     def read(self):
         path = app.config['UPLOAD_FOLDER']
-        file = os.path.join(path, self.video)
+        file = os.path.join(path, self._thumbnail)
         file_text = open(file, 'rb')
         file_read = file_text.read()
         file_encode = base64.encodebytes(file_read)
@@ -87,6 +88,7 @@ class Vid(db.Model):
             "description": self.description,
             "views": self.views,
             "video": self.video,
+            "thumbnail": self.thumbnail,
             "base64": str(file_encode)
         }
     
