@@ -15,7 +15,20 @@ class VideoAPI:
     class _CRUD(Resource):  # User API operation for Create, Read.  THe Update, Delete methods need to be implemeented
         def put(self):
             body = request.get_json()
-            
+            videoID = body.get('videoID')
+            if videoID is None:
+                return {'message': f'Video ID is missing'}, 400
+            video = Vid.query.filter_by(_videoID=videoID).first()
+            if video:
+                try:
+                    video.put()
+                    return jsonify(video.read())
+                except Exception as e:
+                    return {
+                        "error": "Something went wrong",
+                        "message": str(e)
+                    }, 500
+
         def post(self): # Create method
             ''' Read data for json body '''
             body = request.get_json()

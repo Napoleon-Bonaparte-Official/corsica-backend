@@ -117,6 +117,13 @@ class Vid(db.Model):
             "base64": str(file_encode),
             "videoID": self._videoID
         }
+    def put(self):
+        try:
+            self.views += 1
+            db.commit()
+            return self
+        except:
+            return None
     
 def initVideos():
     with app.app_context():
