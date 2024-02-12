@@ -24,7 +24,7 @@ class Vid(db.Model):
     # Define the Notes schema
     # Constructor of a Notes object, initializes of instance variables within object
         # a name getter method, extracts name from object
-    def __init__(self, name, description, views, video, thumbail):
+    def __init__(self, name, description, views, video, thumbnail):
         self._name = name
         self._description = description
         self._views = views
@@ -88,17 +88,17 @@ class Vid(db.Model):
             "description": self.description,
             "views": self.views,
             "video": self.video,
-            "thumbnail": self.thumbnail,
+            "thumbnail": self._thumbnail,
             "base64": str(file_encode)
         }
     
-def initvideos():
+def initVideos():
     with app.app_context():
         """Create database and tables"""
         db.create_all()
         """Tester records for table"""
         videos = [
-            vid(name='Gojo Honored One', description="Throughout the heavens and the earth I alone am the honored one", video="test.mp4", views=0)
+            Vid(name='Gojo Honored One', description="Throughout the heavens and the earth I alone am the honored one", thumbnail="test.png", views=0, video="test.mp3")
         ]
 
         """Builds sample user/note(s) data"""

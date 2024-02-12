@@ -13,7 +13,7 @@ from __init__ import app, db, cors  # Definitions initialization
 from api.user import user_api # Blueprint import api definition
 # from api.player import player_api
 # database migrations
-from model.users import initUsers
+from model.users import initUsers, initVideos
 # from model.players import initPlayers
 
 # setup App pages
@@ -59,6 +59,7 @@ custom_cli = AppGroup('custom', help='Custom commands')
 @custom_cli.command('generate_data')
 def generate_data():
     initUsers()
+    initVideos()
     # initPlayers()
 
 # Register the custom command group with the Flask application
