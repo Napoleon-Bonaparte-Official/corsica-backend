@@ -21,15 +21,17 @@ class Vid(db.Model):
     _views = db.Column(db.Integer, nullable=False)
     _video = db.Column(db.String(255), unique=False, nullable = False)
     _thumbnail = db.Column(db.String, unique=False)
+    _videoID = db.Column(db.Integer, nullable=True)
     # Define the Notes schema
     # Constructor of a Notes object, initializes of instance variables within object
         # a name getter method, extracts name from object
-    def __init__(self, name, description, views, video, thumbnail):
+    def __init__(self, name, description, views, video, thumbnail, videoID):
         self._name = name
         self._description = description
         self._views = views
         self._video = video
         self._thumbnail = thumbnail
+        self._videoID = videoID
 
     @property
     def name(self):
@@ -74,6 +76,14 @@ class Vid(db.Model):
     def thumbnail(self, thumbnail):
         self._thumbnail = thumbnail
 
+    @property
+    def videoID(self):
+        return self._videoID
+    
+    @videoID.setter
+    def videoID(self, videoID):
+        self._videoID = videoID
+
     # Returns a string representation of the Notes object, similar to java toString()
     # returns string
 
@@ -104,7 +114,8 @@ class Vid(db.Model):
             "views": self.views,
             "video": "http://127.0.0.1:8069/videos/" + self.video,
             "thumbnail": self._thumbnail,
-            "base64": str(file_encode)
+            "base64": str(file_encode),
+            "videoID": self._videoID
         }
     
 def initVideos():
@@ -113,12 +124,15 @@ def initVideos():
         db.create_all()
         """Tester records for table"""
         videos = [
-            Vid(name='Gojo Honored One', description="Throughout the heavens and the earth I alone am the honored one", thumbnail="test.png", views=0, video="test.mp4")
+            Vid(name='Gojo Honored One', description="Throughout the heavens and the earth I alone am the honored one", thumbnail="test.png", views=0, video="test.mp4", videoID=0)
         ]
 
         """Builds sample user/note(s) data"""
+        vid_id = 0
         for vid in videos:
             try:
+                vid.videoID = vid_id
+                vid_id += 1
                 vid.create()
             except IntegrityError:
                 '''fails with bad or duplicate data'''
