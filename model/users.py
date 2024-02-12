@@ -52,7 +52,7 @@ class Vid(db.Model):
     
     @property
     def views(self):
-        return self._name
+        return self._views
     
     @views.setter
     def views(self, views):
