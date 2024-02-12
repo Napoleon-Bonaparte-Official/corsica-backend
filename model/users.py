@@ -56,7 +56,7 @@ class Vid(db.Model):
     
     @views.setter
     def views(self, views):
-        self.views = views
+        self._views = views
 
     @property
     def video(self):
