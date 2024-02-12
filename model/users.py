@@ -113,7 +113,7 @@ def initVideos():
         db.create_all()
         """Tester records for table"""
         videos = [
-            Vid(name='Gojo Honored One', description="Throughout the heavens and the earth I alone am the honored one", thumbnail="test.png", views=0, video="test.mp3")
+            Vid(name='Gojo Honored One', description="Throughout the heavens and the earth I alone am the honored one", thumbnail="test.png", views=0, video="test.mp4")
         ]
 
         """Builds sample user/note(s) data"""
