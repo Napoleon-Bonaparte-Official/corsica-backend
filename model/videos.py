@@ -111,7 +111,8 @@ class Video(db.Model):
             "title": self.title,
             "description": self.description,
             "views": self.views,
-            "vid": self.vid,
+            "video": self.video,
+            "poster": self.poster,
             "path": self.path
         }
 
@@ -151,8 +152,9 @@ def initvideos():
         """Create database and tables"""
         db.create_all()
         """Tester records for table"""
+        
         videos = [
-            video(title='Gojo Honored One', descrption="Throughout the heavens and the earth I alone am the honored one",vid='12345', views=0)
+            Video(title='Gojo Honored One', descrption="Throughout the heavens and the earth I alone am the honored one",vid='12345', poster="user", path = "qwerty")
         ]
 
         """Builds sample user/note(s) data"""
