@@ -87,7 +87,7 @@ class Vid(db.Model):
             "name": self.name,
             "description": self.description,
             "views": self.views,
-            "video": self.video,
+            "video": "127.0.0.1:80",
             "thumbnail": self.thumbnail,
             "base64": str(file_encode)
         }

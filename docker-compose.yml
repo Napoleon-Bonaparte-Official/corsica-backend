@@ -4,7 +4,7 @@ services:
                 image: cpt_v1
                 build: .
                 ports:
-                        - "8086:8086"
+                        - "8069:8069"
                 volumes:
                         - ./volumes:/volumes
                         - ./instance:/instance
