@@ -85,95 +85,11 @@ class VideoAPI:
             json_ready = [video.read() for video in videos]  # prepare output in json
             return jsonify(json_ready)  # jsonify creates Flask response object, more specific to APIs than json.dumps
         
+    class _ReadVID(Resource):
+        def get(self, vid):
+            video = Vid.query.filter_by(_videoID=vid).first()
+            data = video.read()
+            return jsonify(data)
 
-    # class _Update(Resource):
-    #     def post(self):
-    #         body = request.get_json()
-    #         uid = body.get('uid')
-    #         if uid is None:
-    #             return {'message': f'User ID missing'}, 400
-    #         email = body.get('email')
-    #         if email is None or "@" not in email:
-    #             return {'message': f'Email is blank or has an invalid format'}, 400
-    #         user = User.query.filter_by(_uid=uid).first()
-    #         if user:
-    #             try:
-    #                 user.update_email(email)
-    #                 return jsonify(user.read())
-    #             except Exception as e:
-    #                 return {
-    #                     "error": "Something went wrong",
-    #                     "message": str(e)
-    #                 }, 500
-    #     def delete(self):
-    #         body = request.get_json()
-    #         uid = body.get('uid')
-    #         user = User.query.filter_by(_uid=uid).first()
-    #         if user:
-    #             try:
-    #                 user.delete()
-    #                 return {f'{uid} has been deleted'}
-    #             except Exception as e:
-    #                 return {
-    #                     "error": "Something went wrong",
-    #                     "message": str(e)
-    #                 }, 500
-
-    # class _Security(Resource):
-    #     def post(self):
-    #         try:
-    #             body = request.get_json()
-    #             if not body:
-    #                 return {
-    #                     "message": "Please provide user details",
-    #                     "data": None,
-    #                     "error": "Bad request"
-    #                 }, 400
-    #             ''' Get Data '''
-    #             uid = body.get('uid')
-    #             if uid is None:
-    #                 return {'message': f'User ID is missing'}, 400
-    #             password = body.get('password')
-                
-    #             ''' Find user '''
-    #             user = User.query.filter_by(_uid=uid).first()
-    #             if user is None or not user.is_password(password):
-    #                 return {'message': f"Invalid user id or password"}, 400
-    #             if user:
-    #                 try:
-    #                     token = jwt.encode(
-    #                         {"_uid": user._uid},
-    #                         current_app.config["SECRET_KEY"],
-    #                         algorithm="HS256"
-    #                     )
-    #                     resp = Response("Authentication for %s successful" % (user._uid))
-    #                     resp.set_cookie("jwt", token,
-    #                             max_age=3600,
-    #                             secure=True,
-    #                             httponly=True,
-    #                             userID='/',
-    #                             samesite='None'  # This is the key part for cross-site requests
-
-    #                             # domain="frontend.com"
-    #                             )
-    #                     return resp
-    #                 except Exception as e:
-    #                     return {
-    #                         "error": "Something went wrong",
-    #                         "message": str(e)
-    #                     }, 500
-    #             return {
-    #                 "message": "Error fetching auth token!",
-    #                 "data": None,
-    #                 "error": "Unauthorized"
-    #             }, 404
-    #         except Exception as e:
-    #             return {
-    #                     "message": "Something went wrong!",
-    #                     "error": str(e),
-    #                     "data": None
-    #             }, 500
-
-            
-    # building RESTapi endpoint
     api.add_resource(_CRUD, '/')
+    api.add_resource(_ReadVID, '/<int:vid>')

@@ -188,6 +188,7 @@ class User(db.Model):
         self._email = email
         self._dob = dob
         self._role = role
+        
     # a name getter method, extracts name from object
     @property
     def name(self):
