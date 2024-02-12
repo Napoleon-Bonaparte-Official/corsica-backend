@@ -15,13 +15,13 @@ class VideoAPI:
     class _CRUD(Resource):  # User API operation for Create, Read.  THe Update, Delete methods need to be implemeented
         def put(self):
             body = request.get_json()
-            videoID = body.get('videoID')
+            videoID = int(body.get('videoID'))
             if videoID is None:
                 return {'message': f'Video ID is missing'}, 400
             video = Vid.query.filter_by(_videoID=videoID).first()
             if video:
                 try:
-                    video.put()
+                    put_req = video.put()
                     return jsonify(video.read())
                 except Exception as e:
                     return {
@@ -90,6 +90,7 @@ class VideoAPI:
             video = Vid.query.filter_by(_videoID=vid).first()
             data = video.read()
             return jsonify(data)
+
 
     api.add_resource(_CRUD, '/')
     api.add_resource(_ReadVID, '/<int:vid>')

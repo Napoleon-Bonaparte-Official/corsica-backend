@@ -130,8 +130,8 @@ class Vid(db.Model):
         }
     def put(self):
         try:
-            self.views += 1
-            db.commit()
+            self._views += 1
+            db.session.commit()
             return self
         except:
             return None
