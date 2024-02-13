@@ -23,10 +23,11 @@ class Vid(db.Model):
     _thumbnail = db.Column(db.String, unique=False)
     _videoID = db.Column(db.Integer, unique=True, nullable=True)
     _userID = db.Column(db.String(255), nullable=False)
+    _genre = db.Column(db.String(255), unique=False, nullable=True)
     # Define the Notes schema
     # Constructor of a Notes object, initializes of instance variables within object
         # a name getter method, extracts name from object
-    def __init__(self, name, description, views, video, thumbnail, videoID, userID):
+    def __init__(self, name, description, views, video, thumbnail, videoID, userID, genre=""):
         self._name = name
         self._description = description
         self._views = views
@@ -34,6 +35,7 @@ class Vid(db.Model):
         self._thumbnail = thumbnail
         self._videoID = videoID
         self._userID= userID
+        self._genre = genre
 
     @property
     def name(self):
@@ -93,6 +95,14 @@ class Vid(db.Model):
     @userID.setter
     def userID(self, userID):
         self._userID = userID
+        
+    @property
+    def genre(self):
+        return self._genre
+    
+    @genre.setter
+    def genre(self, genre):
+        self._genre = genre
 
     # Returns a string representation of the Notes object, similar to java toString()
     # returns string
@@ -126,7 +136,8 @@ class Vid(db.Model):
             "thumbnail": self._thumbnail,
             "base64": str(file_encode),
             "videoID": self.videoID,
-            "userID": self.userID
+            "userID": self.userID,
+            "genre": self.genre
         }
     def put(self):
         try:
@@ -148,7 +159,8 @@ def initVideos():
             views=0, 
             video="test.mp4", 
             videoID=0, 
-            userID="advikg"
+            userID="advikg",
+            genre="music"
         )
         video2 = Vid(
             name='I luvvvv Jack Daniels', 
@@ -157,7 +169,8 @@ def initVideos():
             views=0, 
             video="ranked.mp4", 
             videoID=0, 
-            userID="imreddy"
+            userID="imreddy",
+            genre="sports"
         )
         video3 = Vid(
             name='MERICA', 
@@ -165,7 +178,8 @@ def initVideos():
             thumbnail="merica.png", 
             views=0, video="merica.mp4", 
             videoID=0, 
-            userID="imreddy"
+            userID="imreddy",
+            genre="gaming"
         )
         video4 = Vid(
             name='Making Coffee', 
