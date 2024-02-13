@@ -4,6 +4,7 @@ from flask_restful import Api, Resource # used for REST API building
 from datetime import datetime
 from auth_middleware import token_required
 import os
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from model.users import Vid
 
 video_api = Blueprint('video_api', __name__, url_prefix='/api/videos')
@@ -57,7 +58,7 @@ class VideoAPI:
                     return {'message': f'userID is missing or in the wrong format'}, 400
 
                 ''' #1: Key code block, setup USER OBJECT '''
-                vid = Vid(name,thumbnail,description,video,userID)
+                vid = Vid(name=name,thumbnail=thumbnail,description=description,video=video,userID=userID,views=0,genre="")
                 # create user in database
                 videoJ = vid.create()
                 # success returns json of user

@@ -27,15 +27,15 @@ class Vid(db.Model):
     # Define the Notes schema
     # Constructor of a Notes object, initializes of instance variables within object
         # a name getter method, extracts name from object
-    def __init__(self, name, description, views, video, thumbnail, videoID, userID, genre=""):
+    def __init__(self, name, description, views, video, thumbnail, userID, genre=""):
         self._name = name
         self._description = description
         self._views = views
         self._video = video
         self._thumbnail = thumbnail
-        self._videoID = videoID
         self._userID= userID
         self._genre = genre
+        self._videoID = None
 
     @property
     def name(self):
@@ -112,6 +112,12 @@ class Vid(db.Model):
     def create(self):
         try:
             # creates a Notes object from Notes(db.Model) class, passes initializers
+            self._videoID = self.id
+            path = app.config['UPLOAD_FOLDER']
+            file_decode = base64.decodebytes(self._thumbnail)
+            output_file_path = os.path.join(path, str(self.id) + "_thumb.png")
+            with open(output_file_path, 'wb') as output_file:
+                output_file.write(file_decode)
             db.session.add(self)  # add prepares to persist person object to Notes table
             db.session.commit()  # SqlAlchemy "unit of work pattern" requires a manual commit
             return self
@@ -122,23 +128,37 @@ class Vid(db.Model):
     # CRUD read, returns dictionary representation of Notes object
     # returns dictionary
     def read(self):
-        path = app.config['UPLOAD_FOLDER']
-        file = os.path.join(path, self._thumbnail)
-        file_text = open(file, 'rb')
-        file_read = file_text.read()
-        file_encode = base64.encodebytes(file_read)
-        return {
-            "id": self.id,
-            "name": self.name,
-            "description": self.description,
-            "views": self.views,
-            "video": "http://127.0.0.1:8069/videos/" + self.video,
-            "thumbnail": self._thumbnail,
-            "base64": str(file_encode),
-            "videoID": self.videoID,
-            "userID": self.userID,
-            "genre": self.genre
-        }
+        try:
+            path = app.config['UPLOAD_FOLDER']
+            file = os.path.join(path, self._thumbnail)
+            file_text = open(file, 'rb')
+            file_read = file_text.read()
+            file_encode = base64.encodebytes(file_read)
+            return {
+                "id": self.id,
+                "name": self.name,
+                "description": self.description,
+                "views": self.views,
+                "video": "http://127.0.0.1:8069/videos/" + self.video,
+                "thumbnail": self._thumbnail,
+                "base64": str(file_encode),
+                "videoID": self.videoID,
+                "userID": self.userID,
+                "genre": self.genre
+            }
+        except:
+            return {
+                "id": self.id,
+                "name": self.name,
+                "description": self.description,
+                "views": self.views,
+                "video": "http://127.0.0.1:8069/videos/" + self.video,
+                "thumbnail": "",
+                "base64": "",
+                "videoID": self.videoID,
+                "userID": self.userID,
+                "genre": self.genre
+            }
     def put(self):
         try:
             self._views += 1
