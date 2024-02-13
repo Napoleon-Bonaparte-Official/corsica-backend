@@ -109,17 +109,18 @@ class Vid(db.Model):
 
     # CRUD create, adds a new record to the Notes table
     # returns the object added or None in case of an error
-    def create(self):
+    def create(self, base64_encoded):
         try:
             # creates a Notes object from Notes(db.Model) class, passes initializers
             self._videoID = self.id
             path = app.config['UPLOAD_FOLDER']
-            file_decode = base64.decodebytes(self._thumbnail)
-            output_file_path = os.path.join(path, str(self.id) + "_thumb.png")
-            with open(output_file_path, 'wb') as output_file:
-                output_file.write(file_decode)
+            file_decode = base64.b64decode(base64_encoded)
             db.session.add(self)  # add prepares to persist person object to Notes table
             db.session.commit()  # SqlAlchemy "unit of work pattern" requires a manual commit
+            output_file_path = os.path.join(path, str(self.id) + str(self._thumbnail))
+            with open(output_file_path, 'wb') as output_file:
+                output_file.write(file_decode)
+            db.session.commit()
             return self
         except IntegrityError:
             db.session.remove()
@@ -178,7 +179,6 @@ def initVideos():
             thumbnail="test.png", 
             views=0, 
             video="test.mp4", 
-            videoID=0, 
             userID="advikg",
             genre="music"
         )
@@ -188,7 +188,6 @@ def initVideos():
             thumbnail="ranked.png", 
             views=0, 
             video="ranked.mp4", 
-            videoID=0, 
             userID="imreddy",
             genre="sports"
         )
@@ -196,8 +195,8 @@ def initVideos():
             name='MERICA', 
             description="MERICAAAAA", 
             thumbnail="merica.png", 
-            views=0, video="merica.mp4", 
-            videoID=0, 
+            views=0, 
+            video="merica.mp4", 
             userID="imreddy",
             genre="gaming"
         )
@@ -207,7 +206,6 @@ def initVideos():
             thumbnail="coffee.png", 
             views=0, 
             video="coffee.mp4", 
-            videoID=0, 
             userID="imreddy"
         )
         video5 = Vid(
@@ -216,7 +214,6 @@ def initVideos():
             thumbnail="homeless.png", 
             views=0, 
             video="homeless.mp4", 
-            videoID=0, 
             userID="imreddy"
         )
         video6 = Vid(
@@ -225,7 +222,6 @@ def initVideos():
             thumbnail="mongols.png", 
             views=0, 
             video="mongols.mp4", 
-            videoID=0, 
             userID="imreddy"
         )
         video7 = Vid(
@@ -234,7 +230,6 @@ def initVideos():
             thumbnail="frog.png", 
             views=0, 
             video="frog.mp4", 
-            videoID=0, 
             userID="imreddy"
         )
         
@@ -246,7 +241,12 @@ def initVideos():
             try:
                 vid.videoID = vid_id
                 vid_id += 1
-                vid.create()
+                path = app.config['UPLOAD_FOLDER']
+                file = os.path.join(path, vid.thumbnail)
+                file_text = open(file, 'rb')
+                file_read = file_text.read()
+                file_encode = base64.encodebytes(file_read)
+                vid.create(file_encode)
             except IntegrityError:
                 '''fails with bad or duplicate data'''
                 db.session.remove()

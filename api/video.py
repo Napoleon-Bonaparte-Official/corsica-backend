@@ -45,9 +45,9 @@ class VideoAPI:
                     return {'message': f'Description is missing, or is less than 2 characters'}, 400
 
                 # look for password and dob
-                thumbnail = body.get('thumbnail')
-                if thumbnail is None:
-                    return {'message': f'thumbnail is missing or in the wrong format'}, 400
+                base64 = body.get('base64')
+                if base64 is None:
+                    return {'message': f'Thumbnail is missing or in the wrong format'}, 400
 
                 video = body.get('video')
                 if video is None:
@@ -56,11 +56,15 @@ class VideoAPI:
                 userID = body.get('uid')
                 if userID is None:
                     return {'message': f'userID is missing or in the wrong format'}, 400
+                
+                thumb_name = body.get('thumb_name')
+                if thumb_name is None:
+                    return {'message': f'Thumbnail is missing or in the wrong format'}, 400
 
                 ''' #1: Key code block, setup USER OBJECT '''
-                vid = Vid(name=name,thumbnail=thumbnail,description=description,video=video,userID=userID,views=0,genre="")
+                vid = Vid(name=name, thumbnail=thumb_name,description=description,video=video,userID=userID,views=0,genre="")
                 # create user in database
-                videoJ = vid.create()
+                videoJ = vid.create(base64)
                 # success returns json of user
                 if videoJ:
                     return jsonify(videoJ.read())
