@@ -52,7 +52,7 @@ class VideoAPI:
                 if video is None:
                     return {'message': f'Video is missing or in the wrong format'}, 400
                 
-                userID = body.get('userID')
+                userID = body.get('uid')
                 if userID is None:
                     return {'message': f'userID is missing or in the wrong format'}, 400
 
