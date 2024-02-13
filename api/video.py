@@ -7,7 +7,7 @@ import os
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from model.users import Vid
 
-video_api = Blueprint('video_api', __name__, url_prefix='/api/videos')
+video_api = Blueprint('video_api', __name__, url_prefix='/api/video')
 
 # API docs https://flask-restful.readthedocs.io/en/latest/api.html
 api = Api(video_api)
