@@ -141,15 +141,70 @@ def initVideos():
         """Create database and tables"""
         db.create_all()
         """Tester records for table"""
-        videos = [
-            Vid(name='Gojo Honored One', description="Throughout the heavens and the earth I alone am the honored one", thumbnail="test.png", views=0, video="test.mp4", videoID=0, userID="advikg"),
-            Vid(name='I luvvvv Jack Daniels', description="I just luvvvvvvvvvvv it", thumbnail="ranked.png", views=0, video="ranked.mp4", videoID=0, userID="imreddy"),
-            Vid(name='MERICA', description="MERICAAAAA", thumbnail="merica.png", views=0, video="merica.mp4", videoID=0, userID="imreddy"),
-            Vid(name='Making Coffee', description="Making coffee is harder than your 9-5.", thumbnail="coffee.png", views=0, video="coffee.mp4", videoID=0, userID="imreddy"),
-            Vid(name='homless, amirite', description="amirite?", thumbnail="homeless.png", views=0, video="homeless.mp4", videoID=0, userID="imreddy"),
-            Vid(name='Ghengis Khan is my daddy', description="gyatttt", thumbnail="mongols.png", views=0, video="mongols.mp4", videoID=0, userID="imreddy"),
-            Vid(name='he found me', description="oh no", thumbnail="frog.png", views=0, video="frog.mp4", videoID=0, userID="imreddy"),
-        ]
+        video1 = Vid(
+            name='Gojo Honored One', 
+            description="Throughout the heavens and the earth I alone am the honored one", 
+            thumbnail="test.png", 
+            views=0, 
+            video="test.mp4", 
+            videoID=0, 
+            userID="advikg"
+        )
+        video2 = Vid(
+            name='I luvvvv Jack Daniels', 
+            description="I just luvvvvvvvvvvv it", 
+            thumbnail="ranked.png", 
+            views=0, 
+            video="ranked.mp4", 
+            videoID=0, 
+            userID="imreddy"
+        )
+        video3 = Vid(
+            name='MERICA', 
+            description="MERICAAAAA", 
+            thumbnail="merica.png", 
+            views=0, video="merica.mp4", 
+            videoID=0, 
+            userID="imreddy"
+        )
+        video4 = Vid(
+            name='Making Coffee', 
+            description="Making coffee is harder than your 9-5.", 
+            thumbnail="coffee.png", 
+            views=0, 
+            video="coffee.mp4", 
+            videoID=0, 
+            userID="imreddy"
+        )
+        video5 = Vid(
+            name='homless, amirite', 
+            description="amirite?", 
+            thumbnail="homeless.png", 
+            views=0, 
+            video="homeless.mp4", 
+            videoID=0, 
+            userID="imreddy"
+        )
+        video6 = Vid(
+            name='Ghengis Khan is my daddy', 
+            description="gyatttt", 
+            thumbnail="mongols.png", 
+            views=0, 
+            video="mongols.mp4", 
+            videoID=0, 
+            userID="imreddy"
+        )
+        video7 = Vid(
+            name='he found me', 
+            description="oh no", 
+            thumbnail="frog.png", 
+            views=0, 
+            video="frog.mp4", 
+            videoID=0, 
+            userID="imreddy"
+        )
+        
+        videos = [video1, video2, video3, video4, video5, video6, video7]
 
         """Builds sample user/note(s) data"""
         vid_id = 0
