@@ -239,7 +239,7 @@ def initVideos():
         vid_id = 0
         for vid in videos:
             try:
-                vid.videoID = vid_id
+                vid._videoID = vid_id
                 vid_id += 1
                 path = app.config['UPLOAD_FOLDER']
                 file = os.path.join(path, vid.thumbnail)

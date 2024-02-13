@@ -57,9 +57,9 @@ class VideoAPI:
                 if userID is None:
                     return {'message': f'userID is missing or in the wrong format'}, 400
                 
-                thumb_name = body.get('thumb_name')
+                thumb_name = body.get('thumbnail')
                 if thumb_name is None:
-                    return {'message': f'Thumbnail is missing or in the wrong format'}, 400
+                    return {'message': f'Thumbnail name is missing or in the wrong format'}, 400
 
                 ''' #1: Key code block, setup USER OBJECT '''
                 vid = Vid(name=name, thumbnail=thumb_name,description=description,video=video,userID=userID,views=0,genre="")
