@@ -61,8 +61,13 @@ class VideoAPI:
                 if thumb_name is None:
                     return {'message': f'Thumbnail name is missing or in the wrong format'}, 400
 
+                genre = body.get('genre')
+                print(genre)
+                if thumb_name is None:
+                    return {'message': f'Genre  is missing or in the wrong format'}, 400
+                
                 ''' #1: Key code block, setup USER OBJECT '''
-                vid = Vid(name=name, thumbnail=thumb_name,description=description,video=video,userID=userID,views=0,genre="")
+                vid = Vid(name=name, thumbnail=thumb_name,description=description,video=video,userID=userID,views=0,genre=genre)
                 # create user in database
                 videoJ = vid.create(base64)
                 # success returns json of user
