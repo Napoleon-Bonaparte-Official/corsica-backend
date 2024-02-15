@@ -23,7 +23,7 @@ class Vid(db.Model):
     _thumbnail = db.Column(db.String, unique=False)
     _videoID = db.Column(db.Integer, unique=True, nullable=True)
     _userID = db.Column(db.String(255), nullable=False)
-    _genre = db.Column(db.String(255), unique=False, nullable=True)
+    _genre = db.Column(db.String(255), unique=False, nullable=False)
     # Define the Notes schema
     # Constructor of a Notes object, initializes of instance variables within object
         # a name getter method, extracts name from object
