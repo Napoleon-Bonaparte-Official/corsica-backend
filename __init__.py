@@ -12,7 +12,7 @@ These object can be used throughout project.
 
 # Setup of key Flask object (app)
 app = Flask(__name__)
-cors = CORS(app, supports_credentials=True, origins=['http://localhost:4100', 'https://napoleon-bonaparte-official.github.io', 'http://127.0.0.1:4100', 'https://nighthawkcoders.github.io'])
+cors = CORS(app, supports_credentials=True, origins=['https://napoleon-bonaparte-official.github.io'])
 
 root_dir = os.path.abspath(os.path.dirname(__file__))
 
