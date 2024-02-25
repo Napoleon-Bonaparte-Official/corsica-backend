@@ -8,3 +8,4 @@ Flask_Migrate
 Flask_Restful
 Flask_Cors
 PyJWT
+flask-jwt-extended
