@@ -54,15 +54,6 @@ def before_request():
     if allowed_origin in ['https://napoleon-bonaparte-official.github.io']:
         cors._origins = allowed_origin
 
-@app.after_request
-def after_request(response):
-    # Check if the request Origin header is allowed
-    allowed_origin = request.headers.get('Origin')
-    if allowed_origin in ['https://napoleon-bonaparte-official.github.io']:
-        response.headers['Access-Control-Allow-Origin'] = allowed_origin
-        response.headers['Access-Control-Allow-Credentials'] = 'true'
-    return response
-
 
 # Create an AppGroup for custom commands
 custom_cli = AppGroup('custom', help='Custom commands')
