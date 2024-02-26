@@ -6,8 +6,7 @@ from flask.cli import AppGroup
 
 
 # import "packages" from "this" project
-from __init__ import app, db, cors  # Definitions initialization
-
+from __init__ import app, db  # Definitions initialization
 
 # setup APIs
 from api.user import user_api # Blueprint import api definition
@@ -47,14 +46,6 @@ def table():
 def videos(path):
     return send_from_directory('videos', path)
 
-@app.before_request
-def before_request():
-    # Check if the request came from a specific origin
-    allowed_origin = request.headers.get('Origin')
-    if allowed_origin in ['https://napoleon-bonaparte-official.github.io']:
-        cors._origins = allowed_origin
-
-
 # Create an AppGroup for custom commands
 custom_cli = AppGroup('custom', help='Custom commands')
 
@@ -71,4 +62,6 @@ app.cli.add_command(custom_cli)
 # this runs the application on the development server
 if __name__ == "__main__":
     # change name for testing
+    from flask_cors import CORS
+    CORS(app)
     app.run(debug=True, host="0.0.0.0", port="8069")

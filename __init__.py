@@ -1,5 +1,4 @@
 from flask import Flask
-from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import os
@@ -12,7 +11,6 @@ These object can be used throughout project.
 
 # Setup of key Flask object (app)
 app = Flask(__name__)
-cors = CORS(app, supports_credentials=True)
 
 root_dir = os.path.abspath(os.path.dirname(__file__))
 
