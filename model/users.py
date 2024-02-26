@@ -181,7 +181,7 @@ def initVideos():
         video1 = Vid(
             name='Napoleon Bonaparte Edit 1', 
             description="Napoleon the GOAT, omg I love him he's my glorious KING", 
-            thumbnail="napoleonbonaparte.png", 
+            thumbnail="napoleonbonaparte.jpg", 
             views=0, 
             video="napoleon-bonaparte.mp4", 
             userID="advikg",
