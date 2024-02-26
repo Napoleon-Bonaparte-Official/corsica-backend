@@ -178,32 +178,32 @@ def initVideos():
         """Create database and tables"""
         db.create_all()
         """Tester records for table"""
-        video1 = Vid(
-            name='Napoleon Bonaparte Edit 1', 
-            description="Napoleon the GOAT, omg I love him he's my glorious KING", 
-            thumbnail="napoleonbonaparte.jpg", 
-            views=0, 
-            video="napoleon-bonaparte.mp4", 
-            userID="advikg",
-            genre="music"
-        )
-        video2 = Vid(
-            name=' Cisco Kaisen', 
-            description="He didn't know his TTL had reached zero.", 
-            thumbnail="paul-kaisen.jpg", 
-            views=0, 
-            video="napolean-edit.mp4", 
-            userID="advikg",
-            genre="music"
-        )
+        # video1 = Vid(
+        #     name='Napoleon Bonaparte Edit 1', 
+        #     description="Napoleon the GOAT, omg I love him he's my glorious KING", 
+        #     thumbnail="napoleonbonaparte.jpg", 
+        #     views=0, 
+        #     video="napoleon-bonaparte.mp4", 
+        #     userID="advikg",
+        #     genre="music"
+        # )
+        # video2 = Vid(
+        #     name=' Cisco Kaisen', 
+        #     description="He didn't know his TTL had reached zero.", 
+        #     thumbnail="paul-kaisen.jpg", 
+        #     views=0, 
+        #     video="napolean-edit.mp4", 
+        #     userID="advikg",
+        #     genre="music"
+        # )
 
 
         # video2 = Vid(
                 
         # )
         
-        videos = [video1, video2] 
-
+        # videos = [video1, video2] 
+        videos = []
         # videos = [video1, video2, video3, video4, video5, video6, video7]
 
         """Builds sample user/note(s) data"""
