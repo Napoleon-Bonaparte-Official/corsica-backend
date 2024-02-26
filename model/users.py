@@ -416,7 +416,7 @@ def initUsers():
         )
         u3 = User(
             name="Will Cheng",
-            uid="cartistan666",
+            uid="wcheng",
             password='password',
             email = "will@gmail.com",
             dob=date(2020, 12, 25)
