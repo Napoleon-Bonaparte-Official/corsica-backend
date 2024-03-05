@@ -49,5 +49,5 @@ app.cli.add_command(custom_cli)
 # Run the application
 if __name__ == "__main__":
     # Initialize CORS with origins and credentials support
-    CORS(app, origins=['https://napoleon-bonaparte-official.github.io'], supports_credentials=True)
+    CORS(app, origins=['http://localhost:4100', 'http://127.0.0.1:4100', 'https://napoleon-bonaparte-official.github.io'], supports_credentials=True)
     app.run(debug=True, host="0.0.0.0", port="8069")
