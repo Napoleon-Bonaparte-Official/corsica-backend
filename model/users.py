@@ -181,7 +181,7 @@ def initVideos():
         video1 = Vid(
             name='Napoleon Bonaparte Edit 1', 
             description="Napoleon the GOAT, omg I love him he's my glorious KING", 
-            thumbnail="1napoleonbonaparte.jpg", 
+            thumbnail="napoleonbonaparte.jpg", 
             views=0, 
             video="napoleon-bonaparte.mp4", 
             userID="advikg",
@@ -190,7 +190,7 @@ def initVideos():
         video2 = Vid(
             name=' Cisco Kaisen', 
             description="He didn't know his TTL had reached zero.", 
-            thumbnail="2paul-kaisen.jpg", 
+            thumbnail="paul-kaisen.jpg", 
             views=0, 
             video="test.mp4", 
             userID="advikg",
