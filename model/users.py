@@ -192,7 +192,7 @@ def initVideos():
             description="He didn't know his TTL had reached zero.", 
             thumbnail="2paul-kaisen.jpg", 
             views=0, 
-            video="napolean-edit.mp4", 
+            video="test.mp4", 
             userID="advikg",
             genre="music"
         )
