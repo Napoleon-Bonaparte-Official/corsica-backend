@@ -1,11 +1,13 @@
 import json, jwt
-from flask import Blueprint, request, jsonify, current_app, Response
+from flask import Blueprint, request, jsonify, current_app, Response, make_response
 from flask_restful import Api, Resource # used for REST API building
 from datetime import datetime
 from auth_middleware import token_required
 import os
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from model.users import Vid
+from model.users import User
+
 
 video_api = Blueprint('video_api', __name__, url_prefix='/api/video')
 
@@ -16,19 +18,40 @@ class VideoAPI:
     class _CRUD(Resource):  # User API operation for Create, Read.  THe Update, Delete methods need to be implemeented
         def put(self):
             body = request.get_json()
+            type = int(body.get('type'))
             videoID = int(body.get('videoID'))
             if videoID is None:
                 return {'message': f'Video ID is missing'}, 400
             video = Vid.query.filter_by(_videoID=videoID).first()
             if video:
-                try:
-                    put_req = video.put()
-                    return jsonify(video.read())
-                except Exception as e:
-                    return {
-                        "error": "Something went wrong",
-                        "message": str(e)
-                    }, 500
+                if type == 0:
+                    try:
+                        put_req = video.put()
+                        return jsonify(video.read())
+                    except Exception as e:
+                        return {
+                            "error": "Something went wrong",
+                            "message": str(e)
+                        }, 500
+                elif type == 1:
+                    try:
+                        put_req = video.like()
+                        return jsonify(video.read())
+                    except Exception as e:
+                        return {
+                            "error": "Something went wrong",
+                            "message": str(e)
+                        }, 500
+                elif type == 2:
+                    try:
+                        put_req = video.dislike()
+                        return jsonify(video.read())
+                    except Exception as e:
+                        return {
+                            "error": "Something went wrong",
+                            "message": str(e)
+                        }, 500
+                
                 
         @token_required
         def post(self, current_user): # Create method
@@ -96,7 +119,46 @@ class VideoAPI:
             video = Vid.query.filter_by(_videoID=vid).first()
             data = video.read()
             return jsonify(data)
+        
+        # def put(self,)
 
+    class _Recommend(Resource):
+        def get(self, uid):
+            # Get user preferences
+            user = User.query.filter_by(_uid=uid).first()
+            if user is None:
+                return jsonify({"message": "User not found"}), 404
+            
+            user_preferences = user.preferences
 
+            # Get all videos
+            videos = Vid.query.all()
+
+            # Filter videos based on matching genres
+            matching_videos = []
+            for video in videos:
+                if any(pref in video.genre for pref in user_preferences):
+                    matching_videos.append(video)
+
+            # Calculate like to dislike ratio
+            for video in matching_videos:
+                if video.dislikes != 0:
+                    video.like_to_dislike_ratio = video.likes / video.dislikes
+                else:
+                    video.like_to_dislike_ratio = video.likes
+
+            sorted_videos = sorted(matching_videos, key=lambda x: x.views, reverse=True)
+
+            # Sort matching videos based on like to dislike ratio
+            sorted_videos = sorted(sorted_videos, key=lambda x: x.like_to_dislike_ratio, reverse=True)
+
+            # Sort by highest to lowest views within each ratio group
+
+            # Prepare JSON response
+            json_ready = [video.read() for video in sorted_videos]
+            return jsonify(json_ready)
+
+    
     api.add_resource(_CRUD, '/')
     api.add_resource(_ReadVID, '/<int:vid>')
+    api.add_resource(_Recommend, '/recommend/<string:uid>')

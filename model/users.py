@@ -24,6 +24,8 @@ class Vid(db.Model):
     _videoID = db.Column(db.Integer, unique=True, nullable=True)
     _userID = db.Column(db.String(255), nullable=False)
     _genre = db.Column(db.String(255), unique=False, nullable=False)
+    _likes = db.Column(db.Integer, nullable=False)
+    _dislikes = db.Column(db.Integer, nullable=False)
     # Define the Notes schema
     # Constructor of a Notes object, initializes of instance variables within object
         # a name getter method, extracts name from object
@@ -36,6 +38,8 @@ class Vid(db.Model):
         self._userID= userID
         self._genre = genre
         self._videoID = None
+        self._likes = 0
+        self._dislikes = 0
 
     @property
     def name(self):
@@ -64,6 +68,22 @@ class Vid(db.Model):
     def views(self, views):
         self._views = views
 
+    @property 
+    def likes(self):
+        return self._likes
+    
+    @likes.setter
+    def likes(self, likes):
+        self._likes = likes
+        
+    @property
+    def dislikes(self):
+        return self._dislikes
+    
+    @dislikes.setter
+    def dislikes(self, dislikes):
+        self._dislikes = dislikes    
+    
     @property
     def video(self):
         return self._video
@@ -150,7 +170,9 @@ class Vid(db.Model):
                 "base64": str(file_encode),
                 "videoID": self.videoID,
                 "userID": self.userID,
-                "genre": self.genre
+                "genre": self.genre,
+                "likes": self.likes,
+                "dislikes": self.dislikes
             }
         except:
             return {
@@ -163,7 +185,9 @@ class Vid(db.Model):
                 "base64": "",
                 "videoID": self.videoID,
                 "userID": self.userID,
-                "genre": self.genre
+                "genre": self.genre,
+                "likes": self.likes,
+                "dislikes": self.dislikes
             }
     def put(self):
         try:
@@ -171,6 +195,22 @@ class Vid(db.Model):
             db.session.commit()
             return self
         except:
+            return None
+    
+    def like(self):
+        try:
+            self._likes += 1
+            db.session.commit()
+            return self
+        except: 
+            return None
+    
+    def dislike(self):
+        try:
+            self._dislikes += 1
+            db.session.commit()
+            return self
+        except: 
             return None
     
 def initVideos():
@@ -227,9 +267,7 @@ def initVideos():
 # -- b.) User represents data we want to store, something that is built on db.Model
 # -- c.) SQLAlchemy ORM is layer on top of SQLAlchemy Core, then SQLAlchemy engine, SQL
 class User(db.Model):
-    __tablename__ = "users"  # table name is plural, class name is singular
-
-    # Define the User schema with "vars" from object
+    __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     _name = db.Column(db.String(255), unique=False, nullable=False)
     _uid = db.Column(db.String(255), unique=True, nullable=False)
@@ -237,6 +275,9 @@ class User(db.Model):
     _email = db.Column(db.String(255), unique=True, nullable=False)
     _dob = db.Column(db.Date)
     _role = db.Column(db.String(20), default="User", nullable=False)
+    # Define _preferences as an ARRAY of strings
+    _preferences = db.Column(db.String(255), nullable=False)
+
 
     # Demo purposes
     #
@@ -245,13 +286,14 @@ class User(db.Model):
     # posts = db.relationship("Post", cascade="all, delete", backref="users", lazy=True)
 
     # constructor of a User object, initializes the instance variables within object (self)
-    def __init__(self, name, uid, email, password="123qwerty", dob=date.today(), role="User"):
+    def __init__(self, name, uid, email, password="123qwerty", dob=date.today(), role="User", preferences="none"):
         self._name = name  # variables with self prefix become part of the object,
         self._uid = uid
         self.set_password(password)
         self._email = email
         self._dob = dob
         self._role = role
+        self._preferences = preferences
         
     # a name getter method, extracts name from object
     @property
@@ -347,6 +389,14 @@ class User(db.Model):
     
     # ... (existing code)
 
+    @property
+    def preferences(self):
+        return self._preferences
+    
+    @preferences.setter
+    def set_preferences(self, preferences):
+        self._preferences = preferences
+    
     # CRUD read converts self to dictionary
     # returns dictionary
     def read(self):
@@ -357,7 +407,8 @@ class User(db.Model):
             "dob": self.dob,
             # "age": self.age,
             "role": self.role,
-            "email": self.email
+            "email": self.email,
+            "preferences": self.preferences
             # "post s": [post.read() for post in self.posts]
         }
 
@@ -427,10 +478,14 @@ def initUsers():
             dob=date(1945, 8, 9),
         )
         users = [u1, u2, u3, u4]
-
+        # print("-------------------------- USERS -----------------------------")
+        # print(users)
         """Builds sample user/note(s) data"""
+        # i = 0
         for user in users:
             try:
+                # print(i)
+                # print(user)
                 user.create()
             except IntegrityError:
                 """fails with bad or duplicate data"""

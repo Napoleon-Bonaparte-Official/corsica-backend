@@ -35,7 +35,8 @@ class UserAPI:
             dob = body.get('dob')
             ''' #1: Key code block, setup USER OBJECT '''
             print(dob)
-            uo = User(name=name, uid=uid, email=email)
+            preferences = body.get("preferences")
+            uo = User(name=name, uid=uid, email=email, preferences=preferences)
             
             ''' Additional garbage error checking '''
             # set password if provided
@@ -47,6 +48,8 @@ class UserAPI:
                     uo.dob = datetime.strptime(dob, '%m-%d-%Y').date()
                 except:
                     return {'message': f'Date of birth format error {dob}, must be mm-dd-yyyy'}, 400
+            
+            
             ''' #2: Key Code block to add user to database '''
             # create user in database
             user = uo.create()
