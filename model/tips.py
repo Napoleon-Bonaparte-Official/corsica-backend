@@ -1,112 +1,141 @@
-import json
-from IPython.display import display
-import seaborn as sns
-import pandas as pd
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.model_selection import train_test_split
+## Python Titanic Model, prepared for a titanic.py file
+
+# Import the required libraries for the TitanicModel class
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
-import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
 import pandas as pd
+import numpy as np
+import seaborn as sns
 
-# Load the Tips dataset
-tips_data = sns.load_dataset('tips')
-print("Tips Data")
-
-# print(titanic_data.columns) # titanic data set
-# display(titanic_data[['survived','pclass', 'sex', 'age', 'sibsp', 'parch', 'class', 'fare', 'embark_town', 'alone']]) # look at selected columns
-
-
-def clean_data(td):
-    # td.drop(['alive', 'who', 'adult_male', 'class', 'embark_town', 'deck'], axis=1, inplace=True)
-    #td.dropna(inplace=True) # drop rows with at least one missing value, after dropping unuseful columns
-
-    # Encode categorical variables
-    enc = OneHotEncoder(handle_unknown='ignore')
-    enc.fit(td[['embarked']])
-    onehot = enc.transform(td[['embarked']]).toarray()
-    cols = ['embarked_' + val for val in enc.categories_[0]]
-    td[cols] = pd.DataFrame(onehot)
-    td.drop(['embarked'], axis=1, inplace=True)
-    td.dropna(inplace=True) # drop rows with at least one missing value, after preparing the data
-    return td, enc
-
-# clean_data(titanic_data)
-
-
-def prep_analysis(td):
-    X = td.drop('tip', axis=1)
-    y = td['tip']
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
-
-    # Train a decision tree classifier
-    dt = DecisionTreeClassifier()
-    dt.fit(X_train, y_train)
-
-    # Test the model
-    y_pred = dt.predict(X_test)
-    accuracy = accuracy_score(y_test, y_pred)
-    print('DecisionTreeClassifier Accuracy: {:.2%}'.format(accuracy))  
-
-    # Train a logistic regression model
-    logreg = LogisticRegression()
-    logreg.fit(X_train, y_train)
-
-    # Test the model
-    y_pred = logreg.predict(X_test)
-    accuracy = accuracy_score(y_test, y_pred)
-    print('LogisticRegression Accuracy: {:.2%}'.format(accuracy))  
-    return logreg
+class TipsModel:
+    """This whole class encompasses the total tip model to determine how much a customer will tip based on other facts
+    """
+    # This is the instance which stores the entire model, you can use this model many times in prediction, but it's initialized once
+    _instance = None
     
-def prediction(passenger, td = titanic_data):
-    new_passenger = passenger.copy()
-    print(new_passenger['sex'])
-# Preprocess the new passenger data
-    new_passenger['sex'] = new_passenger['sex'].apply(lambda x: 1 if x == 'male' else 0)
-    new_passenger['alone'] = new_passenger['alone'].apply(lambda x: 1 if x == True else 0)
+    # constructor, used to initialize the TitanicModel
+    def __init__(self):
+        self.tips_data = sns.load_dataset('tips')
+        # Determine the  model
+        self.model = None
+        self.dt = None
+        # define ML features and target
+        self.features = ['total_bill', 'sex', 'smoker', 'day', 'time', 'size']
+        self.target = 'tip'
 
-    # Encode 'embarked' variable
-    onehot = enc.transform(new_passenger[['embarked']]).toarray()
-    cols = ['embarked_' + val for val in enc.categories_[0]]
-    new_passenger[cols] = pd.DataFrame(onehot, index=new_passenger.index)
-    new_passenger.drop(['name'], axis=1, inplace=True)
-    new_passenger.drop(['embarked'], axis=1, inplace=True)
+        self.tips_data = sns.load_dataset('tips')
 
-    display(new_passenger)
+        # Update self.features to match the updated column names
+        self.encoder = OneHotEncoder(handle_unknown='ignore')
+        # load the titanic dataset
 
-    # Predict the survival probability for the new passenger
-    dead_proba, alive_proba = np.squeeze(logreg.predict_proba(new_passenger))
 
-    # Print the survival probability
-    print('Death probability: {:.2%}'.format(dead_proba))  
-    print('Survival probability: {:.2%}'.format(alive_proba))
-    results = {
-        "death": 'Death probability: {:.2%}'.format(dead_proba), 
-        "survival": 'Survival probability: {:.2%}'.format(alive_proba)
+
+
+    # clean the tips dataset, prepare it for training
+    def _clean(self):
+        self.titanic_data['sex'] = self.titanic_data['sex'].apply(lambda x: 1 if x == 'male' else 0)
+        self.
+        # Categorical data of Day
+        onehot = self.encoder.fit_transform(self.tips_data[['day']]).toarray()
+        cols = ['day' + str(val) for val in self.encoder.categories_[0]]
+        onehot_df = pd.DataFrame(onehot, columns=cols)
+        self.titanic_data = pd.concat([self.titanic_data, onehot_df], axis=1)
+        self.titanic_data.drop(['day'], axis=1, inplace=True)
+
+
+        
+
+      # train the tips model using linear regression
+    def _train(self):
+        # split the data into features and target
+        X = self.tips_data[self.features]
+        y = self.tips_data[self.target]
+        
+        # perform train-test split
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        
+        # initialize and train the model
+        self.model = LogisticRegression(iter=1000)
+        self.model.fit(X_train, y_train)
+        
+        # evaluate the model
+        y_pred = self.model.predict(X_test)
+        r2 = r2_score(y_test, y_pred)
+        print(f'R-squared score: {r2}')
+
+    @classmethod
+    def get_instance(cls):
+        """ Gets, and conditionally cleans and builds, the singleton instance of the TitanicModel.
+        The model is used for predicting tip amounts based on customer information.
+
+        Returns:
+            TitanicModel: the singleton _instance of the TitanicModel, which contains data and methods for prediction.
+        """        
+        # check for instance, if it doesn't exist, create it
+        if cls._instance is None:
+            cls._instance = cls()
+            cls._instance._clean()
+            cls._instance._train()
+        # return the instance, to be used for prediction
+        return cls._instance
+
+    def predict_tip(self, customer_info):
+        """ Predict the tip amount for a customer based on their information.
+
+        Args:
+            customer_info (dict): A dictionary representing customer information. The dictionary should contain the following keys:
+                'total_bill': The total bill amount
+                'sex': The customer's sex ('Male' or 'Female')
+                'smoker': Whether the customer is a smoker ('Yes' or 'No')
+                'day': The day of the week ('Thur', 'Fri', 'Sat', 'Sun')
+                'time': The time of day ('Lunch' or 'Dinner')
+                'size': The size of the group
+
+        Returns:
+           float: predicted tip amount
+        """
+        # clean the customer data and prepare it for prediction
+        customer_df = pd.DataFrame(customer_info, index=[0])
+        categorical_cols = ['sex', 'smoker', 'day', 'time']
+        customer_df = pd.get_dummies(customer_df, columns=categorical_cols, drop_first=True)
+        
+        # predict the tip amount
+        tip_amount = self.model.predict(customer_df[self.features])
+        return tip_amount[0]
+    
+def testTip():
+    """ Test the Titanic Model for predicting tip amounts.
+    Using the TitanicModel class, we can predict the tip amount for a customer.
+    Print output of this test contains method documentation, customer data, and predicted tip amount.
+    """
+     
+    # setup customer data for prediction
+    print(" Step 1: Define customer data for prediction:")
+    customer_info = {
+        'total_bill': [50],
+        'sex': ['Male'],
+        'smoker': ['Yes'],
+        'day': ['Sat'],
+        'time': ['Dinner'],
+        'size': [4]
     }
-    return results
+    print("\t", customer_info)
+    print()
+
+    # get an instance of the cleaned and trained Titanic Model
+    tipModel = TipsModel.get_instance()
+    print(" Step 2:", tipModel.get_instance.__doc__)
+   
+    # print the predicted tip amount
+    print(" Step 3:", tipModel.predict_tip.__doc__)
+    tip_amount = tipModel.predict_tip(customer_info)
+    print('\t Predicted tip amount: ${:.2f}'.format(tip_amount))
+    print()
     
-def init_dataset():
-    global titanic_data, td, enc, logreg
-    titanic_data = sns.load_dataset('tips')
-    td = titanic_data
-    td, enc = clean_data(titanic_data)
-    logreg = prep_analysis(titanic_data)
-    return td
-
-
-
-
-# passenger = pd.DataFrame({
-#     "name": ["TEST"],
-#     "pclass": [1],
-#     "sex": ["male"],
-#     "age": [12],
-#     "sibsp": [100],
-#     "parch": [100], 
-#     "fare": [100], 
-#     "embarked": ["S"], 
-#     "alone": ["True"]
-# })
-# prediction(passenger)
+if __name__ == "__main__":
+    print(" Begin:", testTip.__doc__)
+    testTip()
