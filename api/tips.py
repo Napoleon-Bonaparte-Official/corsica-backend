@@ -14,7 +14,7 @@ titanic_api = Blueprint('tips_api', __name__, url_prefix='/api/tips')
 # API docs https://flask-restful.readthedocs.io/en/latest/api.html
 api = Api(titanic_api)
 
-class TpisAPI:        
+class TipsAPI:        
     class _Predict(Resource):  # User API operation for Create, Read.  THe Update, Delete methods need to be implemeented
         def post(self):
             ''' Read data for json body '''
