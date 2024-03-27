@@ -96,6 +96,13 @@ def testTip():
     print('\t Predicted tip amount: ${:.2f}'.format(tip_amount))
     print()
     
+    
+def initTips1():
+    """ Initialize the Titanic Model.
+    This function is used to load the Titanic Model into memory, and prepare it for prediction.
+    """
+    TipsModel.get_instance()
+    
 if __name__ == "__main__":
     print("Begin:", testTip.__doc__)
     testTip()

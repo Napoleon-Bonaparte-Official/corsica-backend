@@ -14,8 +14,11 @@ from api.user import user_api # Blueprint import api definition
 from api.video import video_api
 # from api.player import player_api
 # database migrations
+from api.tips import tips_api
 from model.users import initUsers, initVideos
 # from model.players import initPlayers
+from model.tips import initTips1
+from model.tips2 import initTips2
 
 # setup App pages
 from projects.projects import app_projects # Blueprint directory import projects definition
@@ -28,6 +31,7 @@ db.init_app(app)
 app.register_blueprint(user_api) # register api routes
 app.register_blueprint(video_api)
 # app.register_blueprint(player_api)
+app.register_blueprint(tips_api)
 app.register_blueprint(app_projects) # register app pages
 
 @app.errorhandler(404)  # catch for URL not found
@@ -62,7 +66,8 @@ custom_cli = AppGroup('custom', help='Custom commands')
 def generate_data():
     initVideos()
     initUsers()
-    # initPlayers()
+    initTips1()
+    initTips2()
 
 # Register the custom command group with the Flask application
 app.cli.add_command(custom_cli)
