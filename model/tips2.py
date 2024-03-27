@@ -13,36 +13,36 @@ import seaborn as sns
 
 class TipsModel:
     """This whole class encompasses the total tip model to determine how much a customer will tip based on other facts
+       Utilizes the seaborne CSV dataset of https://github.com/mwaskom/seaborn-data/blob/master/tips.csv
     """
     # This is the instance which stores the entire model, you can use this model many times in prediction, but it's initialized once
     _instance = None
     
-    # constructor, used to initialize the TitanicModel
+    # constructor, used to initialize the whole tips model 
     def __init__(self):
+        # Load the seaborn dataset of tips.csv
         self.tips_data = sns.load_dataset('tips')
+
         # Determine the  model
         self.model = None
-        self.dt = None
+
         # define ML features and target
         self.features = ['total_bill', 'sex', 'smoker', 'dayThur', 'dayFri', "daySat", "daySun", 'time', 'size']
         self.target = 'tip'
-
-        self.tips_data = sns.load_dataset('tips')
-
-        # Update self.features to match the updated column names
+        # Update self.features to match the updated column names, because when it one hot encodes it'll include Thursday, Friday, Saturday, Sunday, because that's all that was included within the dataset now
         self.encoder = OneHotEncoder(handle_unknown='ignore')
-        # load the titanic dataset
-
-
 
 
     # clean the tips dataset, prepare it for training
     def _clean(self):
+
+        # All these options that can be represented binarically with 1's and 0's convert them (basically anything with two options only turn it into an integer)
         self.tips_data['sex'] = self.tips_data['sex'].apply(lambda x: 1 if x == 'male' else 0)
         self.tips_data['smoker'] = self.tips_data['smoker'].apply(lambda x: 1 if x == 'Yes' else 0)
         self.tips_data['time'] = self.tips_data['time'].apply(lambda x: 1 if x == 'Dinner' else 0) 
 
-        # Drop rows with missing 'embarked' values before one-hot encoding
+
+        # Drop any rows within the day subset 
         self.tips_data.dropna(subset=['day'], inplace=True)
 
         # Categorical data of Day
