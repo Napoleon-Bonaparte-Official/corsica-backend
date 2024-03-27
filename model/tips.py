@@ -17,6 +17,9 @@ class TipsModel:
     _instance = None
 
     def __init__(self):
+        '''
+        initiates the dataset with the instance variables
+        '''
         self.tips_data = sns.load_dataset('tips')
         self.model = None
         self.features = ['total_bill', 'sex', 'smoker', 'time', 'size']
@@ -24,10 +27,18 @@ class TipsModel:
         self.encoder = OneHotEncoder(handle_unknown='ignore')
 
     def _clean(self):
+        '''
+        This portion of the code classifies the variables sex, smoker, and time with 1/0 values in order for the 
+        regression model to work
+        '''
         self.tips_data['sex'] = self.tips_data['sex'].apply(lambda x: 1 if x == 'Male' else 0)
         self.tips_data['smoker'] = self.tips_data['smoker'].apply(lambda x: 1 if x == 'Yes' else 0)
         self.tips_data['time'] = self.tips_data['time'].apply(lambda x: 1 if x == 'Dinner' else 0)
 
+
+        """
+        One hot encodes the "day" column with the different values of Thur, Fri, Sat, and Sun
+        """
         # One-hot encode 'day' column
         onehot = self.encoder.fit_transform(self.tips_data[['day']]).toarray()
         cols = ['day_' + str(val) for val in self.encoder.categories_[0]]
@@ -38,6 +49,9 @@ class TipsModel:
         self.tips_data.dropna(inplace=True)
 
     def _train(self):
+        """
+        This method trains the regression with the corresponding featured values. 
+        """
         X = self.tips_data[self.features]
         y = self.tips_data[self.target]
 
@@ -46,6 +60,9 @@ class TipsModel:
 
     @classmethod
     def get_instance(cls):
+        '''
+        this method returns the actual trained instance get prediction values
+        '''
         if cls._instance is None:
             cls._instance = cls()
             cls._instance._clean()
@@ -53,6 +70,19 @@ class TipsModel:
         return cls._instance
 
     def predict_tip(self, customer):
+        """
+        Predict the tip amount of a customer.
+        Args:
+            customer (dict): A dictionary representing a customer. The dictionary should contain the following keys:
+                'total_bill': total bill of the stay (any float number with at max 2 decimal places)
+                'sex': Sex of the customer (Male/Female)
+                'smoker': is the customer a smoker? (True/False)
+                'day': day of the week (Thur, Fri, Sat, Sun)
+                'time': time of day (Dinner/Lunch)
+                'size': size of the customer group (1-6)
+        Returns:
+           dictionary : contains the predicted tip amount
+        """
         # Clean and prepare customer data for prediction
         customer_df = pd.DataFrame(customer, index=[0])
         
