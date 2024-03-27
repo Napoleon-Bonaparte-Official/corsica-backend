@@ -11,7 +11,7 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 
-class TipsModel:
+class TipsModel2:
     """This whole class encompasses the total tip model to determine how much a customer will tip based on other facts
     """
     # This is the instance which stores the entire model, you can use this model many times in prediction, but it's initialized once
@@ -142,7 +142,7 @@ def testTip():
     print()
 
     # get an instance of the cleaned and trained Titanic Model
-    tipModel = TipsModel.get_instance()
+    tipModel = TipsModel2.get_instance()
     print(" Step 2:", tipModel.get_instance.__doc__)
    
     # print the predicted tip amount
@@ -151,6 +151,13 @@ def testTip():
     print('\t Predicted tip amount: ${:.2f}'.format(tip_amount))
     print()
     
+    
+def initTips2():
+    """ Initialize the Titanic Model.
+    This function is used to load the Titanic Model into memory, and prepare it for prediction.
+    """
+    TipsModel2.get_instance()
+
 if __name__ == "__main__":
     print(" Begin:", testTip.__doc__)
     testTip()
