@@ -27,7 +27,7 @@ class TipsModel2:
         self.model = None
 
         # define ML features and target
-        self.features = ['total_bill', 'sex', 'smoker', 'dayThur', 'dayFri', "daySat", "daySun", 'time', 'size']
+        self.features = ['total_bill', 'sex', 'smoker', 'time', 'size']
         self.target = 'tip'
         # Update self.features to match the updated column names, because when it one hot encodes it'll include 
         # Thursday, Friday, Saturday, Sunday as numerical numbers, so if it was on that day it'll be represented as likely a 1
@@ -130,7 +130,8 @@ class TipsModel2:
         
         # Ensure feature names match those used during training
         customer_df = customer_df[self.features]
-
+        print("customer_df: ")
+        print(customer_df)
         # Predict tip using the trained model
         tip = np.squeeze(self.model.predict(customer_df))
         
