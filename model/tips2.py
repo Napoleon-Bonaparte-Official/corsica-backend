@@ -29,7 +29,8 @@ class TipsModel2:
         # define ML features and target
         self.features = ['total_bill', 'sex', 'smoker', 'dayThur', 'dayFri', "daySat", "daySun", 'time', 'size']
         self.target = 'tip'
-        # Update self.features to match the updated column names, because when it one hot encodes it'll include Thursday, Friday, Saturday, Sunday, because that's all that was included within the dataset now
+        # Update self.features to match the updated column names, because when it one hot encodes it'll include 
+        # Thursday, Friday, Saturday, Sunday as numerical numbers, so if it was on that day it'll be represented as likely a 1
         self.encoder = OneHotEncoder(handle_unknown='ignore')
 
 
@@ -45,38 +46,46 @@ class TipsModel2:
         # Drop any rows within the day subset 
         self.tips_data.dropna(subset=['day'], inplace=True)
 
-        # Categorical data of Day
+        # Categorical data of day turning into a binary matrix -> transform it into a n numpy array stored in onehot
         onehot = self.encoder.fit_transform(self.tips_data[['day']]).toarray()
+
+        # Here we're gonna create a bunch of different columns with each specific date 
         cols = ['day' + str(val) for val in self.encoder.categories_[0]]
+
+        # Now load the oneshot as a dataframe for pandas
         onehot_df = pd.DataFrame(onehot, columns=cols)
         self.tips_data = pd.concat([self.tips_data, onehot_df], axis=1)
+
+        # Remove the categorical columns for the day
         self.tips_data.drop(['day'], axis=1, inplace=True)
 
-
+        # Add these columns to the specific features for us to analyze
         self.features.extend(cols)
 
+        # I don't' don't I need this for the tips data
         self.tips_data.dropna(inplace=True)
 
 
         
 
-      # train the tips model using linear regression
+    # train the tips model using linear regression
     def _train(self):
-        # split the data into features and target
+        # split the data into features and target, the dependant 
         x = self.tips_data[self.features]
         y = self.tips_data[self.target]
 
-        # Use LinearRegression for regression tasks
+        # Use LinearRegression for regression tasks, beucase linear regression has a continous outcome of the tip variable
+        # Logistic Regression is used in a yes / no example and wouldn't really be relevant here
         self.model = LinearRegression()
         self.model.fit(x, y)
 
     @classmethod
     def get_instance(cls):
-        """ Gets, and conditionally cleans and builds, the singleton instance of the TitanicModel.
+        """ First let's check if the instance exists for the Tips Model.
         The model is used for predicting tip amounts based on customer information.
 
         Returns:
-            TitanicModel: the singleton _instance of the TitanicModel, which contains data and methods for prediction.
+            Tips model: a singular one time use _instance of the TitanicModel, which contains data and methods for prediction.
         """        
         # check for instance, if it doesn't exist, create it
         if cls._instance is None:
@@ -91,23 +100,28 @@ class TipsModel2:
 
         Args:
             customer_info (dict): A dictionary representing customer information. The dictionary should contain the following keys:
-                'total_bill': The total bill amount
+                'total_bill': The total bill amount which is just a float
                 'sex': The customer's sex ('Male' or 'Female')
                 'smoker': Whether the customer is a smoker ('Yes' or 'No')
                 'day': The day of the week ('Thur', 'Fri', 'Sat', 'Sun')
                 'time': The time of day ('Lunch' or 'Dinner')
-                'size': The size of the group
+                'size': The size of the group which is an integer
 
         Returns:
         float: predicted tip amount
         """
         # clean the customer data and prepare it for prediction using dataframes from pandas
         customer_df = pd.DataFrame(customer_info, index=[0])
+
+
+        # Again here we're going to apply binary form on categories that are one or the other
         customer_df['sex'] = customer_df['sex'].apply(lambda x: 1 if x == 'Male' else 0)
         customer_df['smoker'] = customer_df['smoker'].apply(lambda x: 1 if x == 'Yes' else 0)
         customer_df['time'] = customer_df['time'].apply(lambda x: 1 if x == 'Dinner' else 0) 
 
-        # One-hot encode 'day' feature
+
+
+        # One-hot encode 'day' feature -> Binary matrix x-> dataframe and having the multiple categories of each specific day in a binary matrix
         onehot = self.encoder.transform(customer_df[['day']]).toarray()
         cols = ['day' + str(val) for val in self.encoder.categories_[0]]
         onehot_df = pd.DataFrame(onehot, columns=cols)
