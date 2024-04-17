@@ -237,12 +237,71 @@ def initVideos():
             genre="music"
         )
 
+        video3 = Vid(
+            name = "JJK",
+            description = "Gojo Satoru",
+            thumbnail="jjk.png",
+            views=0,
+            video="Aadit.mp4",
+            userID="wcheng",
+            genre="gaming"
+        )
+
+        video4 = Vid(
+            name = "Angry bird",
+            description = "Red Angry Bird talking",
+            thumbnail="angrybird.png",
+            views=0,
+            video="bird.mp4",
+            userID='ykim',
+            genre='educational'
+        )
+        video5 = Vid(
+            name = "Walking around",
+            description = "Making my way down town",
+            thumbnail="walking.jpeg",
+            views=0,
+            video="funny-shuban.mp4",
+            userID='wcheng',
+            genre='gaming'
+        )
+        video6 = Vid(
+            name = "Random Meme 1",
+            description = "First of the two memes that are on this website",
+            thumbnail = "randocat.jpeg",
+            views=0,
+            video="meme.mp4",
+            userID='wcheng',
+            genre="gaming"
+        )
+
+        video7 = Vid(
+            name = "Random Meme 2",
+            description = "Second of the two memes that are on this website",
+            thumbnail = "randocat2.jpeg",
+            views = 0,
+            video="meme2.mp4",
+            userID='wcheng',
+            genre = "sports"
+        
+        )
+
+        video8 = Vid(
+            name = "Oppenheimer",
+            description = "replay of Oppenheimer I guess",
+            thumbnail = "randocat3.jpeg",
+            views = 0,
+            video="oppenheimer.mp4",
+            userID='wcheng',
+            genre = "music"
+
+        )
 
         # video2 = Vid(
                 
         # )
         
-        videos = [video1, video2] 
+        videos = [video1, video2, video3, video4, video5, video6, video7, video8] 
         # videos = []
         # videos = [video1, video2, video3, video4, video5, video6, video7]
 
