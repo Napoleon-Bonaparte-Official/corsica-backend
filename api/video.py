@@ -17,6 +17,15 @@ api = Api(video_api)
 class VideoAPI:        
     class _CRUD(Resource):  # User API operation for Create, Read.  THe Update, Delete methods need to be implemeented
         def put(self):
+            '''
+            (Params) Body:
+                - Video Type (for likes and dislikes)
+                - videoID
+            1. Query the Video metadata with the corresponding video ID
+            2. If the type is set to 0, then run the PUT function in the model to increase the amount of views
+            3. If the type is set to 1, then increase the likes by 1
+            4. If the type is set to 2, then increase the dislikes by 1
+            '''
             body = request.get_json()
             type = int(body.get('type'))
             videoID = int(body.get('videoID'))
@@ -55,10 +64,18 @@ class VideoAPI:
                 
         @token_required
         def post(self, current_user): # Create method
-            ''' Read data for json body '''
+            ''' 
+            Params: 
+                - current_user
+            - Body of the JSON
+                - base64, description, name, userID, thumbnail name, genre
+            
+            1. Create a python object based on the paramters 
+            2. Create the image with the Create method and ready to go for the video
+            3. Once created return the JSON of what the new uploaded JSON looks like              
+            '''
             if request.is_json:
                 body = request.get_json()
-                ''' Avoid garbage in, error checking '''
                 name = body.get('name')
                 if name is None:
                     return {'message': f'name is missing, or is less than 2 characters'}, 400
@@ -115,6 +132,32 @@ class VideoAPI:
             return jsonify(json_ready)  # jsonify creates Flask response object, more specific to APIs than json.dumps
         
     class _ReadVID(Resource):
+        '''
+        params:
+            - Resource: <int:vid> so it takes any resources at /api/video/<vid>
+        
+        get method:
+            - Queries the Video database to find ALL the data paramters in a jsonified format and returns it:
+            EXAMPLE:    
+                /api/video/0 - returns:
+                (JSON) - 
+                {
+                    base64,
+                    description, 
+                    dislikes, 
+                    genre,
+                    id,
+                    likes,
+                    name,
+                    thumbnail,
+                    userID
+                    video,
+                    videoID,
+                    views
+                    }
+            
+        '''
+
         def get(self, vid):
             video = Vid.query.filter_by(_videoID=vid).first()
             data = video.read()
@@ -124,20 +167,26 @@ class VideoAPI:
 
     class _Recommend(Resource):
         def get(self, uid):
-            # Get user preferences
+            '''
+            1. Find who the user is based on the UID
+            2. Find what preference of videos the user likes watching
+            3. Query all the different videos
+            4. For every video find all video genres matching the user's preference
+            5. Show the matching videos based on the MOST views and the MOST like to dislike ratio.
+            6. Return the Data as JSON 
+            '''
             user = User.query.filter_by(_uid=uid).first()
             if user is None:
                 return jsonify({"message": "User not found"}), 404
             
             user_preferences = user.preferences
-
             # Get all videos
             videos = Vid.query.all()
 
             # Filter videos based on matching genres
             matching_videos = []
             for video in videos:
-                if any(pref in video.genre for pref in user_preferences):
+                if user_preferences == video.genre:
                     matching_videos.append(video)
 
             # Calculate like to dislike ratio
