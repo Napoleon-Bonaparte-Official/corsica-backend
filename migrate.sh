@@ -4,6 +4,8 @@
 export FLASK_APP=main
 export PYTHONPATH=.:$PYTHONPATH
 
+rm -rf instance/volumes/sqlite*
+
 # Check if sqlite3 is installed
 if ! command -v sqlite3 &> /dev/null; then
     echo "Error: sqlite3 is not installed. Please install it before running this script."
