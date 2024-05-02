@@ -325,11 +325,11 @@ def initVideos():
         )
 
         video8 = Vid(
-            name = "Oppenheimer",
-            description = "Historical video of Oppenheimer",
+            name = "Collegeboard AP Computer Science Principles Video",
+            description = "AP Computer Science Principles Video",
             thumbnail = "randocat3.jpeg",
             views = 0,
-            video="oppenheimer.mp4",
+            video="cb.mp4",
             userID='celery',
             genre = "music"
 
@@ -390,7 +390,9 @@ class User(db.Model):
         self._dob = dob
         self._role = role
         self._preferences = preferences
-        
+    '''
+    More setters
+    '''
     @property
     def name(self):
         return self._name
@@ -459,6 +461,9 @@ class User(db.Model):
             db.session.remove()
             return None
 
+    '''
+    Roles done by me
+    '''
     @property
     def role(self):
         return self._role
@@ -470,8 +475,9 @@ class User(db.Model):
     def is_admin(self):
         return self._role == "Admin"
     
-    # ... (existing code)
-
+    '''
+    Preferences done by me
+    '''
     @property
     def preferences(self):
         return self._preferences
@@ -522,7 +528,9 @@ class User(db.Model):
 
 """Database Creation and Testing """
 
-
+'''
+No explicit names just random names and DOBs and passwords
+'''
 def initUsers():
     with app.app_context():
         db.create_all()

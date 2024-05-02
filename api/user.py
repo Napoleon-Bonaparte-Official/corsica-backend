@@ -11,7 +11,9 @@ user_api = Blueprint('user_api', __name__,
 
 # API docs https://flask-restful.readthedocs.io/en/latest/api.html
 api = Api(user_api)
-
+'''
+Most of this was just a template that I used, I added some stuff like account deletion
+'''
 class UserAPI:        
     class _CRUD(Resource):  # User API operation for Create, Read.  THe Update, Delete methods need to be implemeented
         def post(self): # Create method
@@ -89,6 +91,7 @@ class UserAPI:
                         "message": str(e)
                     }, 500
         def delete(self):
+            '''done by me'''
             body = request.get_json()
             uid = body.get('uid')
             user = User.query.filter_by(_uid=uid).first()
