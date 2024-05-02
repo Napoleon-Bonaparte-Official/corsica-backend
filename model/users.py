@@ -2,7 +2,7 @@ from random import randrange
 from datetime import date
 import os, base64
 import json
-
+from auth_middleware import token_required
 from __init__ import app, db
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -223,6 +223,7 @@ class Vid(db.Model):
 
     2) Commits it to the DB, otherwise if there's an error don't return anything
     '''
+    
     def put(self):
         try:
             self._views += 1
@@ -230,7 +231,7 @@ class Vid(db.Model):
             return self
         except:
             return None
-    
+        
     def like(self):
         try:
             self._likes += 1
@@ -336,6 +337,8 @@ def initVideos():
         )
         
         videos = [video1, video2, video3, video4, video5, video6, video7, video8] 
+        likes_dislikes_views = {}
+
         for vid in videos:
             try:
                 path = app.config['UPLOAD_FOLDER']
@@ -344,6 +347,13 @@ def initVideos():
                 file_read = file_text.read()
                 file_encode = base64.encodebytes(file_read)
                 vid.create(file_encode)
+
+                likes_dislikes_views[vid] = {
+                    "likes": "", 
+                    "dislikes": "",
+                    "views": ""
+                }
+
             except IntegrityError:
                 '''fails with bad or duplicate data'''
                 db.session.remove()
