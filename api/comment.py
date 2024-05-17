@@ -13,7 +13,7 @@ comment_api = Blueprint('comment_api', __name__, url_prefix='/api/comment')
 api = Api(comment_api)
 
 class commentAPI:        
-    class _CRUD(Resource): 
+    class _ReadComment(Resource): 
         def get(self, vid) :
             video = Vid.query.filter_by(_videoID=vid).first()
             comments = Comment.query.all()
@@ -31,4 +31,16 @@ class commentAPI:
             return jsonify(data)
         
         
-    api.add_resource(_CRUD, '/<int:vid>')
+    class _CRUD(Resource):
+        def post(self, ):
+            body = request.get_json()
+            comment = body.get('comment')
+            videoID = body.get('videoID')
+            uid = body.get('uid')
+            
+            com = Comment(comment, videoID, uid)
+            com.create()
+            return jsonify(com.read())
+            
+    api.add_resource(_CRUD, '/')
+    api.add_resource(_ReadComment, '/<int:vid>')
