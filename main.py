@@ -14,12 +14,12 @@ from api.user import user_api # Blueprint import api definition
 from api.video import video_api
 # from api.player import player_api
 # database migrations
-from api.tips import tips_api
+# from api.tips import tips_api
 from api.comment import comment_api
 from model.users import initUsers, initVideos
 # from model.players import initPlayers
-from model.tips import initTips1
-from model.tips2 import initTips2
+# from model.tips import initTips1
+# from model.tips2 import initTips2
 from model.comments import initComments
 
 # setup App pages
@@ -33,7 +33,7 @@ db.init_app(app)
 app.register_blueprint(user_api) # register api routes
 app.register_blueprint(video_api)
 # app.register_blueprint(player_api)
-app.register_blueprint(tips_api)
+# app.register_blueprint(tips_api)
 app.register_blueprint(app_projects) # register app pages
 app.register_blueprint(comment_api)
 
@@ -69,8 +69,8 @@ custom_cli = AppGroup('custom', help='Custom commands')
 def generate_data():
     initVideos()
     initUsers()
-    initTips1()
-    initTips2()
+    # initTips1()
+    # initTips2()
     # initComments()
 
 # Register the custom command group with the Flask application
