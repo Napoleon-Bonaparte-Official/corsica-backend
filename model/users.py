@@ -230,23 +230,25 @@ class Vid(db.Model):
     2) Commits it to the DB, otherwise if there's an error don't return anything
     '''
     
-    def put(self):
+    def put(self, uid):
         try:
             self._views += 1
+            self._accountViewsLikesDislikes['views'] = 
             db.session.commit()
             return self
         except:
             return None
         
-    def like(self):
+    def like(self, uid):
         try:
             self._likes += 1
+            
             db.session.commit()
             return self
         except: 
             return None
     
-    def dislike(self):
+    def dislike(self, uid):
         try:
             self._dislikes += 1
             db.session.commit()

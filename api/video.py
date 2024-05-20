@@ -29,13 +29,12 @@ class VideoAPI:
             body = request.get_json()
             type = int(body.get('type'))
             videoID = int(body.get('videoID'))
-            if videoID is None:
-                return {'message': f'Video ID is missing'}, 400
+            userID = str(body.get('userID'))
             video = Vid.query.filter_by(_videoID=videoID).first()
             if video:
                 if type == 0:
                     try:
-                        put_req = video.put()
+                        put_req = video.put(userID)
                         return jsonify(video.read())
                     except Exception as e:
                         return {
@@ -44,7 +43,10 @@ class VideoAPI:
                         }, 500
                 elif type == 1:
                     try:
-                        put_req = video.like()
+                        print(userID)
+                        if userID == "None":
+                            return {'message': f'You must be logged in to like the video'}, 401
+                        put_req = video.like(userID)
                         return jsonify(video.read())
                     except Exception as e:
                         return {
@@ -53,7 +55,9 @@ class VideoAPI:
                         }, 500
                 elif type == 2:
                     try:
-                        put_req = video.dislike()
+                        if userID == "None":
+                            return {'message': f"You must be logged in to dislike the video"}, 401
+                        put_req = video.dislike(userID)
                         return jsonify(video.read())
                     except Exception as e:
                         return {
@@ -163,7 +167,6 @@ class VideoAPI:
             data = video.read()
             return jsonify(data)
         
-        # def put(self,)
 
     class _Recommend(Resource):
         def get(self, uid):
