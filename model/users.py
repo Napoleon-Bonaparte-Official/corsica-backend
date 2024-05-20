@@ -23,7 +23,7 @@ class Vid(db.Model):
     _genre = db.Column(db.String(255), unique=False, nullable=False)
     _likes = db.Column(db.Integer, nullable=False)
     _dislikes = db.Column(db.Integer, nullable=False)
-
+    _accountViewsLikesDislikes = db.Column(db.JSON, nullable=True)
     '''
     Initial constructor for the class
     This initializes attributes for the videos object which includes:
@@ -36,7 +36,7 @@ class Vid(db.Model):
         - userID to correspond to who uploaded the video
         - Genre of the video for sorting
     '''
-    def __init__(self, name, description, views, video, thumbnail, userID, genre=""):
+    def __init__(self, name, description, views, video, thumbnail, userID, genre="", accountViewsLikesDislikes = {}):
         self._name = name
         self._description = description
         self._views = views
@@ -47,6 +47,7 @@ class Vid(db.Model):
         self._videoID = None
         self._likes = 0
         self._dislikes = 0
+        self._accountViewsLikesDislikes = accountViewsLikesDislikes
 
 
     '''
@@ -135,7 +136,13 @@ class Vid(db.Model):
     def genre(self, genre):
         self._genre = genre
 
-
+    @property
+    def accountViewsLikesDislikes(self):
+        return self._accountViewsLikesDislikes
+    
+    @accountViewsLikesDislikes.setter
+    def accountViewsLikesDislikes(self):
+        self._accountViewsLikesDislikes = accountViewsLikesDislikes
     
     def create(self, base64_encoded):
 
@@ -170,8 +177,7 @@ class Vid(db.Model):
             db.session.rollback()
             return None
 
-    # CRUD read, returns dictionary representation of Notes object
-    # returns dictionary
+
     '''
     
     Return a JSON getting the base64 of the thumbnail file 
