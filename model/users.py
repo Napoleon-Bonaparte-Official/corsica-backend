@@ -36,7 +36,7 @@ class Vid(db.Model):
         - userID to correspond to who uploaded the video
         - Genre of the video for sorting
     '''
-    def __init__(self, name, description, views, video, thumbnail, userID, genre="", accountViewsLikesDislikes = {}):
+    def __init__(self, name, description, views, video, thumbnail, userID, genre="", accountViewsLikesDislikes = {"views": [], "likes": [], "dislikes": []}):
         self._name = name
         self._description = description
         self._views = views
@@ -141,7 +141,7 @@ class Vid(db.Model):
         return self._accountViewsLikesDislikes
     
     @accountViewsLikesDislikes.setter
-    def accountViewsLikesDislikes(self):
+    def accountViewsLikesDislikes(self, accountViewsLikesDislikes):
         self._accountViewsLikesDislikes = accountViewsLikesDislikes
     
     def create(self, base64_encoded):
@@ -233,7 +233,6 @@ class Vid(db.Model):
     def put(self, uid):
         try:
             self._views += 1
-            self._accountViewsLikesDislikes['views'] = 
             db.session.commit()
             return self
         except:
