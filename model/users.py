@@ -232,16 +232,23 @@ class Vid(db.Model):
     
     def put(self, uid):
         try:
-            self._views += 1
-            db.session.commit()
-            return self
+            if uid != "None":
+                print(self._accountViewsLikesDislikes['views'])
+                if uid not in self._accountViewsLikesDislikes["views"]:
+                    self._accountViewsLikesDislikes.append(uid)
+                    self._views += 1
+                    db.session.commit()
+                    return self
+            else:
+                self._views += 1
+                db.session.commit()
+                return self
         except:
             return None
         
     def like(self, uid):
         try:
             self._likes += 1
-            
             db.session.commit()
             return self
         except: 
