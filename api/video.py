@@ -178,34 +178,69 @@ class VideoAPI:
             5. Show the matching videos based on the MOST views and the MOST like to dislike ratio.
             6. Return the Data as JSON 
             '''
-            user = User.query.filter_by(_uid=uid).first()
-            if user is None:
-                return jsonify({"message": "User not found"}), 404
-            
-            user_preferences = user.preferences
-            # Get all videos
-            videos = Vid.query.all()
-
-            # Filter videos based on matching genres
-            matching_videos = []
-            for video in videos:
-                if user_preferences == video.genre:
-                    matching_videos.append(video)
-
-            # Calculate like to dislike ratio
-            for video in matching_videos:
-                if video.dislikes != 0:
-                    video.like_to_dislike_ratio = video.likes / video.dislikes
+            try:
+                user = User.query.filter_by(_uid=uid).first()
+                if user is None:
+                    user_preferences = None
                 else:
-                    video.like_to_dislike_ratio = video.likes
+                    user_preferences = user.preferences
+                    
+                
+                # Get all videos
+                videos = Vid.query.all()
 
-            sorted_videos = sorted(matching_videos, key=lambda x: x.views, reverse=True)
+                # Filter videos based on matching genres
+                matching_videos = []
+                unmatching_videos = []
+                for video in videos:
+                    if user_preferences == video.genre:
+                        matching_videos.append(video)
+                    else:
+                        unmatching_videos.append(video)
+            except Exception:
+                unmatching_videos = Vid.query.all()
+                matching_videos = []
 
-            # Sort matching videos based on like to dislike ratio
-            sorted_videos = sorted(sorted_videos, key=lambda x: x.like_to_dislike_ratio, reverse=True)
+            # Assuming both `matching_videos` and `unmatching_videos` are lists of objects with `likes` and `dislikes` attributes
 
-            # Sort by highest to lowest views within each ratio group
+            
+            
+            def sort_videos_by_views_and_difference(videos):
+                sorted_videos = []
+                for i in range(len(videos)):
+                    min_index = i
+                    for j in range(i + 1, len(videos)):
+                        # Compare primary key (views)
+                        if videos[j].views < videos[min_index].views:
+                            min_index = j
+                        elif videos[j].views == videos[min_index].views:
+                            # If the primary key (views) is equal, compare secondary key (difference between likes and dislikes)
+                            current_difference = videos[j].likes - videos[j].dislikes
+                            min_difference = videos[min_index].likes - videos[min_index].dislikes
+                            if current_difference < min_difference:
+                                min_index = j
 
+                    # Swap the found minimum element with the first element
+                    videos[i], videos[min_index] = videos[min_index], videos[i]
+                    sorted_videos.insert(0, videos[i])
+                
+                return sorted_videos
+
+            # Sort matching_videos
+            sorted_matching_videos = sort_videos_by_views_and_difference(matching_videos)
+            print("Sorted matching videos:")
+            for video in sorted_matching_videos:
+                print(video.likes - video.dislikes)
+
+            
+            # Sort unmatching_videos
+            sorted_unmatching_videos = sort_videos_by_views_and_difference(unmatching_videos)
+            print("Sorted unmatching videos:")
+            for video in sorted_unmatching_videos:
+                print(video.likes - video.dislikes)
+
+            sorted_videos = sorted_matching_videos + sorted_unmatching_videos
+        
             # Prepare JSON response
             json_ready = [video.read() for video in sorted_videos]
             return jsonify(json_ready)
