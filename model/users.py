@@ -6,7 +6,9 @@ import json
 from __init__ import app, db
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from sqlalchemy.orm.attributes import flag_modified
+from sqlalchemy.ext.mutable import MutableDict
+from sqlalchemy import Column, Integer, JSON
 class Vid(db.Model):
     '''
     Define all the important columns for the videos
@@ -23,7 +25,7 @@ class Vid(db.Model):
     _genre = db.Column(db.String(255), unique=False, nullable=False)
     _likes = db.Column(db.Integer, nullable=False)
     _dislikes = db.Column(db.Integer, nullable=False)
-    _accountViewsLikesDislikes = db.Column(db.JSON, nullable=True)
+    _accountViewsLikesDislikes = db.Column(MutableDict.as_mutable(JSON))
     '''
     Initial constructor for the class
     This initializes attributes for the videos object which includes:
@@ -235,11 +237,15 @@ class Vid(db.Model):
     def put(self, uid):
         try:
             if uid != "None":
-                print(self._accountViewsLikesDislikes['views'])
+                
                 if uid not in self._accountViewsLikesDislikes["views"]:
-                    self._accountViewsLikesDislikes.append(uid)
+                    self._accountViewsLikesDislikes["views"].append(uid)
+                    print(" before commit", self._accountViewsLikesDislikes['views'])
                     self._views += 1
+                    flag_modified(self, "_accountViewsLikesDislikes")
+                    db.session.add(self)
                     db.session.commit()
+                    print(" After commit", self._accountViewsLikesDislikes['views'])
                     return self
             else:
                 self._views += 1
