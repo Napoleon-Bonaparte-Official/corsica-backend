@@ -400,12 +400,13 @@ class User(db.Model):
     _password = db.Column(db.String(255), unique=False, nullable=False)
     _email = db.Column(db.String(255), unique=True, nullable=False)
     _dob = db.Column(db.Date)
+    _playlist = db.Column(MutableDict.as_mutable(JSON))
 
 
     '''
     Extension that I added
         - The role is useful for admins, admins can perform deletion and creation of different user accounts
-        - Preferences - Genre of w
+        - Preferences - Genre of what the user is interested in 
     '''
     _role = db.Column(db.String(20), default="User", nullable=False)
     _preferences = db.Column(db.String(255), nullable=False)
@@ -415,7 +416,7 @@ class User(db.Model):
     '''
     constructor of a User object, initializes the instance variables within object (self)
     '''
-    def __init__(self, name, uid, email, password="123qwerty", dob=date.today(), role="User", preferences="none"):
+    def __init__(self, name, uid, email, password="123qwerty", dob=date.today(), role="User", preferences="none", playlist={}):
         self._name = name  # variables with self prefix become part of the object,
         self._uid = uid
         self.set_password(password)
@@ -423,9 +424,20 @@ class User(db.Model):
         self._dob = dob
         self._role = role
         self._preferences = preferences
+        self._playlist = playlist
+        
     '''
     More setters
     '''
+
+    @property
+    def playlist(self):
+        return self._playlist
+    
+    @playlist.setter
+    def playlist(self, playlist):
+        self._playlist = playlist
+
     @property
     def name(self):
         return self._name
@@ -574,21 +586,24 @@ def initUsers():
             password="password",
             dob=date(1945, 9, 12),
             role="Admin",
-            preferences="music"
+            preferences="music",
+            playlist={}
         )
         u2 = User(
             name="sonic", 
             uid="apple", 
             email = "apple@gmail.com",
             password="password",
-            dob=date(1945, 8, 6)
+            dob=date(1945, 8, 6),
+            playlist={}
         )
         u3 = User(
             name="mario",
             uid="pineapple",
             password='password',
             email = "pineapple@gmail.com",
-            dob=date(1945, 12, 25)
+            dob=date(1945, 12, 25),
+            playlist={}
         )
         u4 = User(
             name="kirby", 
@@ -596,6 +611,7 @@ def initUsers():
             password="password",
             email="celery@gmail.com",
             dob=date(1945, 8, 9),
+            playlist = {}
         )
         users = [u1, u2, u3, u4]
         """Builds user data"""
