@@ -263,17 +263,27 @@ class Vid(db.Model):
                     db.session.commit()
                     return self
             else:
-                self._likes += 1
-                db.session.commit()
-                return self
+                return {
+                    "error": "You must be authorized to perform this action",
+                    "message": "To like a video you must be logged in"
+                }, 401
         except: 
             return None
     
     def dislike(self, uid):
         try:
-            self._dislikes += 1
-            db.session.commit()
-            return self
+            if uid != 'None':
+                if uid not in self._accountViewsLikesDislikes["dislikes"]:
+                    self._accountViewsLikesDislikes["dislikes"].append(uid)
+                    self._dislikes += 1
+                    flag_modified(self, "_accountViewsLikesDislikes")
+                    db.session.commit()
+                    return self
+            else:
+                return {
+                    "error": "You must be authorized to perform this action",
+                    "message": "To dislike a video you must be logged in"
+                }, 401
         except: 
             return None
     
