@@ -202,7 +202,8 @@ class Vid(db.Model):
                 "userID": self.userID,
                 "genre": self.genre,
                 "likes": self.likes,
-                "dislikes": self.dislikes
+                "dislikes": self.dislikes,
+                "accountViewsLikesDislikes": self.accountViewsLikesDislikes
             }
         except:
             return {
@@ -217,7 +218,8 @@ class Vid(db.Model):
                 "userID": self.userID,
                 "genre": self.genre,
                 "likes": self.likes,
-                "dislikes": self.dislikes
+                "dislikes": self.dislikes,
+                "accountViewsLikesDislikes": self.accountViewsLikesDislikes
             }
     
     '''
