@@ -226,8 +226,8 @@ class Vid(db.Model):
     
     '''
     1)
-    Put -> Increases the views by 1
-    Like -> Increases the likes by 1
+    Put -> Increases the views by 1, but only if the user hasn't already seen the video
+    Like -> Increases the likes by 1, but only if the user hasn't already liked the video
     Dislike -> Increase the dislikes by 1
 
 
@@ -237,7 +237,6 @@ class Vid(db.Model):
     def put(self, uid):
         try:
             if uid != "None":
-                
                 if uid not in self._accountViewsLikesDislikes["views"]:
                     self._accountViewsLikesDislikes["views"].append(uid)
                     print(" before commit", self._accountViewsLikesDislikes['views'])
@@ -256,9 +255,17 @@ class Vid(db.Model):
         
     def like(self, uid):
         try:
-            self._likes += 1
-            db.session.commit()
-            return self
+            if uid != 'None':
+                if uid not in self._accountViewsLikesDislikes["likes"]:
+                    self._accountViewsLikesDislikes["likes"].append(uid)
+                    self._likes += 1
+                    flag_modified(self, "_accountViewsLikesDislikes")
+                    db.session.commit()
+                    return self
+            else:
+                self._likes += 1
+                db.session.commit()
+                return self
         except: 
             return None
     
