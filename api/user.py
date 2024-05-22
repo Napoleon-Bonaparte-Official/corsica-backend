@@ -163,8 +163,15 @@ class UserAPI:
                         "data": None
                 }, 500
 
+    class _Playlist(Resource):
+        def get(self): # Read Method
+            users = User.query.all()    # read/extract all users from database
+            json_ready = [user.read() for user in users]  # prepare output in json
+            return jsonify(json_ready) 
+            
             
     # building RESTapi endpoint
     api.add_resource(_CRUD, '/')
     api.add_resource(_Security, '/authenticate')
     api.add_resource(_Update, '/update')
+    api.add_resource(_Playlist, '/playlist')

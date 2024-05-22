@@ -559,7 +559,8 @@ class User(db.Model):
             # "age": self.age,
             "role": self.role,
             "email": self.email,
-            "preferences": self.preferences
+            "preferences": self.preferences,
+            "playlists": self.playlist
             # "post s": [post.read() for post in self.posts]
         }
 
