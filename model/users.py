@@ -564,6 +564,18 @@ class User(db.Model):
             # "post s": [post.read() for post in self.posts]
         }
 
+    def createPlaylist(self, name):
+        self._playlist[name] = []
+        flag_modified(self, "_playlist")
+        db.session.commit()
+        return self
+
+    def updatePlaylist(self, name, videoID):
+        self._playlist[name].append(videoID)
+        flag_modified(self, "_playlist")
+        db.session.commit()
+        return self
+
     def update(self, name="", uid="", password=""):
         """only updates values with length"""
         if len(name) > 0:
