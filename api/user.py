@@ -213,7 +213,7 @@ class UserAPI:
                     "message": "Video already exists"
                 }
             else:
-                usr.updatePlaylist(name, vidID)
+                usr.updatePlaylist(name, int(vidID))
                 return jsonify(usr.read())
         
     # building RESTapi endpoint
