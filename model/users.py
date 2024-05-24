@@ -257,6 +257,9 @@ class Vid(db.Model):
         try:
             if uid != 'None':
                 if uid not in self._accountViewsLikesDislikes["likes"]:
+                    if uid in self._accountViewsLikesDislikes["dislikes"]:
+                        self._dislikes -= 1
+                        self._accountViewsLikesDislikes["dislikes"].remove(uid)
                     self._accountViewsLikesDislikes["likes"].append(uid)
                     self._likes += 1
                     flag_modified(self, "_accountViewsLikesDislikes")
@@ -274,11 +277,14 @@ class Vid(db.Model):
         try:
             if uid != 'None':
                 if uid not in self._accountViewsLikesDislikes["dislikes"]:
+                    if uid in self._accountViewsLikesDislikes["likes"]:
+                        self._likes -= 1
+                        self._accountViewsLikesDislikes["likes"].remove(uid)
                     self._accountViewsLikesDislikes["dislikes"].append(uid)
                     self._dislikes += 1
                     flag_modified(self, "_accountViewsLikesDislikes")
                     db.session.commit()
-                    return self
+                    return self                  
             else:
                 return {
                     "error": "You must be authorized to perform this action",
