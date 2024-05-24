@@ -7,6 +7,7 @@ import os
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from model.users import Vid
 from model.users import User
+import time
 
 
 video_api = Blueprint('video_api', __name__, url_prefix='/api/video')
@@ -179,6 +180,8 @@ class VideoAPI:
             6. Return the Data as JSON 
             '''
             try:
+                start = time.time()
+                print("hello")
                 user = User.query.filter_by(_uid=uid).first()
                 if user is None:
                     user_preferences = None
@@ -196,7 +199,9 @@ class VideoAPI:
                     if user_preferences == video.genre:
                         matching_videos.append(video)
                     else:
-                        unmatching_videos.append(video)
+                        unmatching_videos.append(video)                
+                end = time.time()
+                print("Time elapsed : " + str(abs((end - start)*1000)) + "ms")
             except Exception:
                 unmatching_videos = Vid.query.all()
                 matching_videos = []
@@ -226,18 +231,9 @@ class VideoAPI:
                 
                 return sorted_videos
 
-            # Sort matching_videos
             sorted_matching_videos = sort_videos_by_views_and_difference(matching_videos)
-            print("Sorted matching videos:")
-            for video in sorted_matching_videos:
-                print(video.likes - video.dislikes)
-
-            
-            # Sort unmatching_videos
             sorted_unmatching_videos = sort_videos_by_views_and_difference(unmatching_videos)
-            print("Sorted unmatching videos:")
-            for video in sorted_unmatching_videos:
-                print(video.likes - video.dislikes)
+
 
             sorted_videos = sorted_matching_videos + sorted_unmatching_videos
         
