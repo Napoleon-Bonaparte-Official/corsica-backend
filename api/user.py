@@ -163,8 +163,61 @@ class UserAPI:
                         "data": None
                 }, 500
 
+    class _Playlist(Resource):
+        def get(self): # Read Method
+            users = User.query.all()    # read/extract all users from database
+            json_ready = [user.read() for user in users]  # prepare output in json
+            return jsonify(json_ready) 
             
+        def post(self):
+            body = request.get_json()
+            uid = body.get('uid')
+            name = body.get('name')
+            users = User.query.all()
+            usr = -1
+            for user in users:
+                if(user.read()["uid"] == uid):
+                    usr = user
+            if(usr == -1):
+                print("user doesn't exist")
+                return {
+                    "message": "User doesn't exist"
+                }
+            if(name in list(usr.read()["playlists"].keys())):
+                print("playlist already exists")
+                return {
+                    "message": "Playlist already exists"
+                }
+            else:
+                usr.createPlaylist(name)
+                return jsonify(usr.read())
+        
+        def put(self):
+            body = request.get_json()
+            uid = body.get('uid')
+            name = body.get('name')
+            vidID = body.get('vidID')
+            users = User.query.all()
+            usr = -1
+            for user in users:
+                if(user.read()["uid"] == uid):
+                    usr = user
+            if(usr == -1):
+                print("user doesn't exist")
+                return {
+                    "message": "User doesn't exist"
+                }
+            if(vidID in usr.read()["playlists"][name]):
+                print("video already exists in playlist")
+                return {
+                    "message": "Video already exists"
+                }
+            else:
+                usr.updatePlaylist(name, int(vidID))
+                return jsonify(usr.read())
+        
     # building RESTapi endpoint
     api.add_resource(_CRUD, '/')
     api.add_resource(_Security, '/authenticate')
     api.add_resource(_Update, '/update')
+    api.add_resource(_Playlist, '/playlist')
